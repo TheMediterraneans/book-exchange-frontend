@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import SearchResult from './components/SearchResult'
 import Navbar from './components/Navbar'
 import BookDetailPage from './pages/BookDetailPage'
+import PageNotFound from './pages/PageNotFound'
 
 import './App.css'
 
@@ -18,6 +19,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/*" element={<PageNotFound/>} />
       </Routes>
 
 

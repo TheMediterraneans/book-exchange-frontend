@@ -1,20 +1,40 @@
-//user loggedin, show the library of the user (books that can exchange with others)
-//in this page user can: add and remove books, change the status (from available to not available), duration of exchange?
-//User reserved books (show the list of reserved books, with date of reservation end?)
+import { useAuth } from "../contexts/AuthContext";
 
 function UserBooksPage() {
-  return (
-    <>
-      <section>
-        <h1>Your Library</h1>
-      </section>
+  const { user, logout } = useAuth();
 
-      <section>
-        <h1>Your reserved Books</h1>
-      </section>
-    </>
+  const handleLogout = () => {
+    logout();
+    // Will automatically redirect due to ProtectedRoute
+  };
+
+  return (
+    <div>
+      <h1>Welcome to your books!</h1>
+      <p>Email: {user.email}</p>
+      
+      <button 
+        onClick={handleLogout}
+        style={{
+          backgroundColor: "#dc3545",
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginBottom: "20px"
+        }}
+      >
+        Logout
+      </button>
+      
+      {/* Your books content here */}
+      <div>
+        <h2>Your Books</h2>
+        <p>Here will be your books...</p>
+      </div>
+    </div>
   );
 }
 
-
-export default UserBooksPage
+export default UserBooksPage;

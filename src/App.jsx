@@ -12,11 +12,14 @@ import PageNotFound from './pages/PageNotFound'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
+import ProtectedRoute from './components/ProtectedRoutes'
+import { AuthProvider } from './contexts/AuthContext'
 
 function App() {
   
   return (
-    <>
+    <AuthProvider>
+      <Navbar/>
       
       <h1>Book Exchange App</h1>
 
@@ -32,7 +35,7 @@ function App() {
 
 
       
-    </>
+    </AuthProvider>
   )
 }
 

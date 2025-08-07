@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, setToken } from "../services/auth.services.js";
+import { useAuth } from "../contexts/AuthContext"; // ADD THIS IMPORT
+import { login as loginService, verify } from "../services/auth.services";
 
 function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // ADD THIS LINE
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // clean error when start typing
     if (error) setError("");
   };
 
@@ -20,11 +21,16 @@ function LoginPage() {
     setError("");
 
     try {
-      const response = await login(form);
+      const response = await loginService(form);
       const token = response.data.authToken;
 
-      setToken(token); //  save the token
-      navigate("/mybooks"); // Navigate to the protected page
+      localStorage.setItem("authToken", token);
+      
+      // MODIFY THIS PART - Get user data and update context
+      const userResponse = await verify();
+      login(userResponse.data); // Update global state
+      
+      navigate("/mybooks");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
     } finally {
@@ -65,7 +71,7 @@ function LoginPage() {
         </form>
         
         <p>
-          Non hai un account? <a href="/signup">Registrati qui</a>
+          Don't have an account? <a href="/signup">Sign up here</a>
         </p>
       </section>
     </>

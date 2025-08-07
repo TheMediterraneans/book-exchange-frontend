@@ -6,7 +6,7 @@ function Navbar() {
 
         <>
         <section>
-            <h1>App title to be defined</h1>
+            <h1>Navbar</h1>
         </section>
 
         <section></section>

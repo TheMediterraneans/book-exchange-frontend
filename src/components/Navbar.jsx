@@ -24,7 +24,7 @@ function Navbar() {
       justifyContent: "space-between",
       alignItems: "center",
       padding: "1rem",
-      backgroundColor: "#f8f9fa",
+      backgroundColor: "#a5c03bff",
       borderBottom: "1px solid #dee2e6"
     }}>
       <div>

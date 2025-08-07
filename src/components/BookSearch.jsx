@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function BookSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [copiesForBook, setCopiesForBook] = useState({});  // { externalId: [{BookCopy}] }
-  const [selectedCopy, setSelectedCopy] = useState(null);
-  const [pickupDate, setPickupDate] = useState('');
+  const navigate = useNavigate();
 
   const doSearch = (e) => {
     e.preventDefault();
@@ -45,23 +45,14 @@ function BookSearch() {
       .catch((err) => { console.error('Search error', err); });
   };
 
-  const beginReserve = (copy) => {
-    setSelectedCopy(copy);
-    setPickupDate('');
-  };
-
-  const submitReserve = (e) => {
-    e.preventDefault();
-    axios.post('http://localhost:5005/api/reservations', {
-      bookCopyId: selectedCopy._id,
-      externalId: selectedCopy.externalId,
-      pickupDate: pickupDate,
-    })
-      .then(() => {
-        alert('Reservation created!');
-        setSelectedCopy(null);
-      })
-      .catch((err) => { console.error('Reserve error', err); });
+  const beginReserve = (book, copies) => {
+    console.log('Navigating to reservation page with:', book, copies);
+    navigate('/reserve', { 
+      state: { 
+        book: book, 
+        availableCopies: copies 
+      } 
+    });
   };
 
   return (
@@ -70,45 +61,51 @@ function BookSearch() {
         <input
           value={searchTerm}
           onChange={(e) => { setSearchTerm(e.target.value); }}
-          placeholder="Search for a book..."
+          placeholder="Search for title, author, or ISBN"
         />
         <button type="submit">Search</button>
       </form>
       <hr />
-      {results.map((b) => {
-        const externalId = b.key || b.id;
+      {results.map((book) => {
+
+        const externalId = book.key || book.id;
         const copies = copiesForBook[externalId] || [];
 
-        //console.log('Book:', b.title, 'externalId:', externalId, 'copies:', copies);
+        //console.log('Book:', book.title, 'externalId:', externalId, 'copies:', copies);
 
         return (
-          <div key={externalId}>
-            <strong>{b.title}</strong> — {b.authors && b.authors.join(', ')}
-            {b.coverUrl && <img src={b.coverUrl} alt={b.title} width="60" />}
-            <br />
-            {copies.length > 0 ? (
-              <span>
-                <button style={{ backgroundColor: '#007bff',color: '#fff'}} onClick={() => { beginReserve(copies[0]); }} >
-                  Reserve
-                </button>
-                <span>{copies.length} available</span>
-              </span>
-            ) : (
-              <span>No copies in library</span>
-            )}
-          </div>
+<div key={externalId}>
+    <strong>{book.title}</strong> — {book.authors && book.authors.join(', ')}
+    {book.coverUrl && <img src={book.coverUrl} alt={book.title} width="60" />}
+    <br />
+    
+    {/* Only show button if copies exist AND user is authenticated */}
+    {copies.length > 0 && !!localStorage.getItem('authToken') ? (
+      <span>
+        <button
+          onClick={() => {
+            console.log('Reserve button clicked!', book.title, copies);
+            beginReserve(book, copies);
+          }}
+        >
+          Reserve this book
+        </button>
+        <span> ({copies.length} available)</span>
+      </span>
+    ) : copies.length > 0 ? (
+      <span>
+        <button onClick={() => alert('You need to be logged in to reserve a book')}>
+          Login to Reserve
+        </button>
+        <span> ({copies.length} available)</span>
+      </span>
+    ) : (
+      <span>No copies available</span>
+    )}
+  </div>
         );
       })}
-      {selectedCopy && (
-        <form onSubmit={submitReserve}>
-          <h3>Reserve: {selectedCopy.title}</h3>
-          <label>Pickup date:
-            <input type="date" value={pickupDate} onChange={(e) => { setPickupDate(e.target.value); }} required />
-          </label>
-          <button type="submit">Confirm Reservation</button>
-          <button type="button" onClick={() => { setSelectedCopy(null); }}>Cancel</button>
-        </form>
-      )}
+      
     </div>
   );
 }

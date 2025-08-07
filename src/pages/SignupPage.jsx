@@ -52,7 +52,7 @@ function SignupPage() {
           <input 
             name="name"
             type="text"
-            placeholder="Nome completo"
+            placeholder="Enter your name"
             value={form.name}
             onChange={handleChange}
             required
@@ -72,7 +72,7 @@ function SignupPage() {
           <input 
             name="password"
             type="password"
-            placeholder="Password (min 6 characters, at least 1 capitol letter, and a number)"
+            placeholder="Password (min 6 characters, at least 1 capital letter, and a number)"
             value={form.password}
             onChange={handleChange}
             required
@@ -80,7 +80,7 @@ function SignupPage() {
           />
 
           <button type="submit" disabled={loading}>
-            {loading ? "Signinup..." : "Sign up"}
+            {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
         

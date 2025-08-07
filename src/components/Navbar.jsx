@@ -28,14 +28,14 @@ function Navbar() {
       borderBottom: "1px solid #dee2e6"
     }}>
       <div>
-        <h2>My Books App</h2>
+        <h2 style={{color: "black"}}>My Books App</h2>
       </div>
       
       <div>
         {user ? (
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <span>Welcome, {user.name}!</span>
-            <a href="/mybooks">My Books</a>
+            <a href="/my-books">My Books</a>
             <button 
               onClick={handleLogout}
               style={{

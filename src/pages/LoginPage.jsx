@@ -30,7 +30,7 @@ function LoginPage() {
       const userResponse = await verify();
       login(userResponse.data); // Update global state
       
-      navigate("/mybooks");
+      navigate("/all-books");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
     } finally {

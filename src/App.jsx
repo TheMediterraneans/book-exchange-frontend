@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Routes, Route } from "react-router-dom"
 import Homepage from './pages/Homepage'
 import Footer from './components/Footer'
-import SearchResult from './components/SearchResult'
+
 import Navbar from './components/Navbar'
 import PageNotFound from './pages/PageNotFound'
 import AllBooks from './pages/AllBooks'
@@ -20,15 +20,13 @@ function App() {
     <AuthProvider>
       <Navbar/>
       
-      <Navbar />
-
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/*" element={<PageNotFound/>} />
         <Route path="/all-books" element={<AllBooks/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
-        <Route path='/mybooks' element={<UserBooksPage/>} />
+        <Route path='/my-books' element={<UserBooksPage/>} />
         
       </Routes>
 

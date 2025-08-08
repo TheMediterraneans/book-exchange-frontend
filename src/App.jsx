@@ -17,12 +17,18 @@ import AddCopy from "./pages/AddCopy"
 
 function App() {
 
-<<<<<<< HEAD
   const addBookCopy = async (bookCopyData) => {
   try {
     const storedToken = localStorage.getItem("authToken");
+
+    console.log('Stored token:', storedToken);
+    console.log('Book copy data being sent:', bookCopyData);
     
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/mybooks`, {
+    if (!storedToken) {
+      throw new Error("No authentication token found. Please log in again.");
+    }
+    
+    const response = await fetch(`http://localhost:5005/api/mybooks/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +44,7 @@ function App() {
 
     const newBookCopy = await response.json();
     
-    //update the status of books in the library
+    // update local state if there are books in the library
     // setMyBooks(prevBooks => [...prevBooks, newBookCopy]);
     
     return newBookCopy;
@@ -47,9 +53,6 @@ function App() {
     throw error;
   }
 };
-=======
->>>>>>> d67aa7fec1cbc838ba3f6522efd689b99f8a27ee
-  
   return (
     <AuthProvider>
       
@@ -61,13 +64,9 @@ function App() {
         <Route path="/all-books" element={<AllBooks/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
-        <Route path='/mybooks' element={<UserBooksPage/>} />
-<<<<<<< HEAD
-        <Route path="/reserve" element={<ReservationForm/>} />
-        <Route path='/mybooks' element={<AddCopy addBookCopy={addBookCopy}/>} />
-=======
+        <Route path="/mybooks" element={<UserBooksPage/>} />
         <Route path="/reserve" element={<ReservationPage/>} />
->>>>>>> d67aa7fec1cbc838ba3f6522efd689b99f8a27ee
+        <Route path="/mybooks/add" element={<AddCopy addBookCopy={addBookCopy} />} />
         
       </Routes>
 

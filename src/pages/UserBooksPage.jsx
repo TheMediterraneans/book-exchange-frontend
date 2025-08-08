@@ -1,16 +1,62 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import "./UserBooksPage.css";
 
 function UserBooksPage() {
   const { user, logout } = useAuth();
+  const [myBooks, setMyBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch user's books when component mounts
+  useEffect(() => {
+    fetchMyBooks();
+  }, []);
+
+  const fetchMyBooks = async () => {
+    try {
+      const storedToken = localStorage.getItem("authToken");
+      
+      if (!storedToken) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch("http://localhost:5005/api/mybooks", {
+        headers: {
+          "Authorization": `Bearer ${storedToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+
+      const books = await response.json();
+      setMyBooks(books);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     logout(); // automatically redirect due to ProtectedRoute
   };
 
+  if (isLoading) {
+    return <div>Loading your books...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div>
       <h1>Welcome to your books!</h1>
-      
       
       <button 
         onClick={handleLogout}
@@ -29,16 +75,55 @@ function UserBooksPage() {
       
       {/* Your books content here */}
       <div>
-        <h2>Your Books</h2>
-        <p>Your library...</p>
+        <h2>Your Books ({myBooks.length})</h2>
+        
+        <Link to="/mybooks/add">
+          <button style={{
+            backgroundColor: "purple",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginBottom: "20px"
+          }}>
+            Add a new book to your library
+          </button>
+        </Link>
 
-        <button style={{backgroundColor: "purple",
-          color: "white",
-          border: "none",
-          padding: "8px 16px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "20px"}}>Add a new book to your library</button>
+        {myBooks.length === 0 ? (
+          <p>You don't have any books in your library yet. Add your first book!</p>
+        ) : (
+                     <div className="books-grid">
+             {myBooks.map((book) => (
+               <div key={book._id} className="book-card">
+                 {book.coverUrl && (
+                   <img 
+                     src={book.coverUrl} 
+                     alt={book.title}
+                     className="book-cover"
+                   />
+                 )}
+                 <div className="book-info">
+                   <h3>{book.title}</h3>
+                   {book.authors && book.authors.length > 0 && (
+                     <p className="book-authors">by {book.authors.join(', ')}</p>
+                   )}
+                   {book.publishedYear && (
+                     <p className="book-year">Published: {book.publishedYear}</p>
+                   )}
+                   <p className="book-status">
+                     <strong>Status:</strong> 
+                     <span className={book.isAvailable ? "status-available" : "status-unavailable"}>
+                       {book.isAvailable ? " Available" : " Not Available"}
+                     </span>
+                   </p>
+                   <p><strong>Max Duration:</strong> {book.maxDuration} days</p>
+                 </div>
+               </div>
+             ))}
+           </div>
+        )}
       </div>
 
       <section>

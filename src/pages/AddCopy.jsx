@@ -1,7 +1,8 @@
 
-import { Link } from "react-router-dom"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import "../components/addCopy.css";
 
 function AddCopy({ addBookCopy }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -12,77 +13,83 @@ function AddCopy({ addBookCopy }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    // Function to search books from external APIs
-    const searchBooks = async (query) => {
-        if (!query.trim()) return;
+    // Function to search books using the same logic as BookSearch
+    const doSearch = (e) => {
+        e.preventDefault();
+        
+        if (!searchTerm.trim()) return;
         
         setIsLoading(true);
-        try {
-            // Replace with your actual API endpoint for book search
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/books/search?q=${encodeURIComponent(query)}`);
-            const data = await response.json();
-            setSearchResults(data.books || []);
-        } catch (error) {
-            console.error('Error searching books:', error);
-            setSearchResults([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        setSearchResults([]);
+        setSelectedBook(null);
 
-    // Debounced search
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (searchTerm) {
-                searchBooks(searchTerm);
-            } else {
+        axios.get('http://localhost:5005/api/search-books', { params: { q: searchTerm } })
+            .then((response) => {
+                setSearchResults(response.data);
+            })
+            .catch((err) => {
+                console.error('Search error', err);
                 setSearchResults([]);
-            }
-        }, 500);
-
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
 
     const handleBookSelect = (book) => {
         setSelectedBook(book);
-        setSearchResults([]); // Hide search results after selection
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
+    
+    if (!selectedBook) {
+        alert('Please select a book first');
+        return;
+    }
+
+    setIsSubmitting(true);
+    try {
+        // Debug: log the selected book to see its structure
+        console.log('Selected book:', selectedBook);
         
-        if (!selectedBook) {
-            alert('Please select a book first');
-            return;
+        const externalId = selectedBook.key || selectedBook.id;
+        console.log('External ID:', externalId);
+        
+        if (!externalId) {
+            throw new Error('No valid external ID found for this book');
         }
+        
+        const bookCopyData = {
+            externalId: externalId,
+            title: selectedBook.title,
+            authors: selectedBook.authors || [],
+            coverUrl: selectedBook.coverUrl || null,
+            publishedYear: selectedBook.publishedYear || null,
+            maxDuration: parseInt(maxDuration)
+        };
 
-        setIsSubmitting(true);
-        try {
-            const bookCopyData = {
-                apiBookId: selectedBook.id,
-                maxDuration: parseInt(maxDuration)
-            };
-
-            await addBookCopy(bookCopyData);
-            
-            // Reset form
-            setSelectedBook(null);
-            setSearchTerm('');
-            setMaxDuration(14);
-            
-            // Navigate back to library or show success message
-            navigate('/my-library');
-        } catch (error) {
-            console.error('Error adding book to library:', error);
-            alert('Error adding book to library. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+        console.log('Book copy data being sent:', bookCopyData);
+        await addBookCopy(bookCopyData);
+        
+        // Reset form
+        setSelectedBook(null);
+        setSearchTerm('');
+        setSearchResults([]);
+        setMaxDuration(14);
+        
+        // Navigate back to library
+        navigate('/mybooks');
+    } catch (error) {
+        console.error('Error adding book to library:', error);
+        alert('Error adding book to library. Please try again.');
+    } finally {
+        setIsSubmitting(false);
+    }
+};
 
     const clearSelection = () => {
         setSelectedBook(null);
-        setSearchTerm('');
     };
 
     return (
@@ -93,15 +100,23 @@ function AddCopy({ addBookCopy }) {
                 {/* Book Search Section */}
                 <div className="search-section">
                     <label htmlFor="book-search">Search for a book:</label>
-                    <input
-                        id="book-search"
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Enter book title, author, or ISBN..."
-                        disabled={selectedBook !== null}
-                        className="search-input"
-                    />
+                    <div className="search-input-group">
+                        <input
+                            id="book-search"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Enter book title, author, or ISBN..."
+                            className="search-input"
+                        />
+                        <button 
+                            type="button" 
+                            onClick={doSearch}
+                            className="search-btn"
+                        >
+                            Search
+                        </button>
+                    </div>
                     
                     {selectedBook && (
                         <button 
@@ -123,32 +138,37 @@ function AddCopy({ addBookCopy }) {
                     <div className="search-results">
                         <h3>Search Results:</h3>
                         <ul className="book-list">
-                            {searchResults.map((book) => (
-                                <li 
-                                    key={book.id} 
-                                    onClick={() => handleBookSelect(book)}
-                                    className="book-item"
-                                >
-                                    <div className="book-info">
-                                        {book.thumbnail && (
-                                            <img 
-                                                src={book.thumbnail} 
-                                                alt={book.title}
-                                                className="book-thumbnail"
-                                            />
-                                        )}
-                                        <div className="book-details">
-                                            <h4>{book.title}</h4>
-                                            {book.authors && (
-                                                <p>by {book.authors.join(', ')}</p>
+                            {searchResults.map((book) => {
+                                const externalId = book.key || book.id;
+                                
+                                return (
+                                    <li 
+                                        key={externalId} 
+                                        onClick={() => handleBookSelect(book)}
+                                        className="book-item"
+                                    >
+                                        <div className="book-info">
+                                            {book.coverUrl && (
+                                                <img 
+                                                    src={book.coverUrl} 
+                                                    alt={book.title}
+                                                    className="book-thumbnail"
+                                                />
                                             )}
-                                            {book.publishedDate && (
-                                                <p>Published: {book.publishedDate}</p>
-                                            )}
+                                            <div className="book-details">
+                                                <h4>{book.title}</h4>
+                                                {book.authors && book.authors.length > 0 && (
+                                                    <p>by {book.authors.join(', ')}</p>
+                                                )}
+                                                {book.publishedYear && (
+                                                    <p>Published: {book.publishedYear}</p>
+                                                )}
+                                                <p className="source-tag">Source: {book.source}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                            ))}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 )}
@@ -158,30 +178,22 @@ function AddCopy({ addBookCopy }) {
                     <div className="selected-book">
                         <h3>Selected Book:</h3>
                         <div className="book-preview">
-                            {selectedBook.thumbnail && (
+                            {selectedBook.coverUrl && (
                                 <img 
-                                    src={selectedBook.thumbnail} 
+                                    src={selectedBook.coverUrl} 
                                     alt={selectedBook.title}
                                     className="book-thumbnail-large"
                                 />
                             )}
                             <div className="book-details">
                                 <h4>{selectedBook.title}</h4>
-                                {selectedBook.authors && (
+                                {selectedBook.authors && selectedBook.authors.length > 0 && (
                                     <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
                                 )}
-                                {selectedBook.publishedDate && (
-                                    <p><strong>Published:</strong> {selectedBook.publishedDate}</p>
+                                {selectedBook.publishedYear && (
+                                    <p><strong>Published:</strong> {selectedBook.publishedYear}</p>
                                 )}
-                                {selectedBook.description && (
-                                    <p className="description">
-                                        <strong>Description:</strong> 
-                                        {selectedBook.description.length > 200 
-                                            ? `${selectedBook.description.substring(0, 200)}...`
-                                            : selectedBook.description
-                                        }
-                                    </p>
-                                )}
+                                <p><strong>Source:</strong> {selectedBook.source}</p>
                             </div>
                         </div>
                     </div>
@@ -211,165 +223,6 @@ function AddCopy({ addBookCopy }) {
                     {isSubmitting ? 'Adding to Library...' : 'Add to My Library'}
                 </button>
             </form>
-
-            {/*<style jsx>{`
-                .add-copy-container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-
-                .add-copy-form {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .search-section {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                .search-input {
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    font-size: 16px;
-                }
-
-                .search-input:disabled {
-                    background-color: #f5f5f5;
-                }
-
-                .clear-selection-btn {
-                    align-self: flex-start;
-                    padding: 5px 10px;
-                    background-color: #6c757d;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-
-                .loading {
-                    text-align: center;
-                    color: #666;
-                    padding: 20px;
-                }
-
-                .search-results {
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    max-height: 400px;
-                    overflow-y: auto;
-                }
-
-                .book-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
-
-                .book-item {
-                    padding: 15px;
-                    border-bottom: 1px solid #eee;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
-
-                .book-item:hover {
-                    background-color: #f8f9fa;
-                }
-
-                .book-item:last-child {
-                    border-bottom: none;
-                }
-
-                .book-info {
-                    display: flex;
-                    gap: 15px;
-                }
-
-                .book-thumbnail {
-                    width: 60px;
-                    height: 80px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                }
-
-                .book-thumbnail-large {
-                    width: 120px;
-                    height: 160px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                }
-
-                .book-details h4 {
-                    margin: 0 0 5px 0;
-                    color: #333;
-                }
-
-                .book-details p {
-                    margin: 0 0 3px 0;
-                    color: #666;
-                    font-size: 14px;
-                }
-
-                .selected-book {
-                    border: 2px solid #28a745;
-                    border-radius: 4px;
-                    padding: 15px;
-                    background-color: #f8fff9;
-                }
-
-                .book-preview {
-                    display: flex;
-                    gap: 15px;
-                }
-
-                .description {
-                    margin-top: 10px !important;
-                }
-
-                .duration-section {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                }
-
-                .duration-input {
-                    width: 100px;
-                    padding: 8px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                }
-
-                .duration-section small {
-                    color: #666;
-                    font-size: 12px;
-                }
-
-                .submit-btn {
-                    padding: 12px 24px;
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
-
-                .submit-btn:hover:not(:disabled) {
-                    background-color: #0056b3;
-                }
-
-                .submit-btn:disabled {
-                    background-color: #6c757d;
-                    cursor: not-allowed;
-                }
-            `}</style>*/}
         </div>
     );
 }

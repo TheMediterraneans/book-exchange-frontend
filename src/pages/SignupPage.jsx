@@ -49,7 +49,8 @@ function SignupPage() {
       <h1>Sign up!</h1>
       <section>
         <form onSubmit={handleSubmit}>
-          <input 
+          <article>
+            <input 
             name="name"
             type="text"
             placeholder="Enter your name"
@@ -58,8 +59,10 @@ function SignupPage() {
             required
             disabled={loading}
           />
+          </article>
           
-          <input 
+          <article>
+            <input 
             name="email"
             type="email"
             placeholder="E-mail"
@@ -68,8 +71,10 @@ function SignupPage() {
             required
             disabled={loading}
           />
+          </article>
           
-          <input 
+          <article>
+            <input 
             name="password"
             type="password"
             placeholder="Password (min 6 characters, at least 1 capital letter, and a number)"
@@ -78,7 +83,8 @@ function SignupPage() {
             required
             disabled={loading}
           />
-
+          </article>
+          
           <button type="submit" disabled={loading}>
             {loading ? "Signing up..." : "Sign up"}
           </button>

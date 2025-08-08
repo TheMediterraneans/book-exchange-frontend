@@ -43,6 +43,7 @@ function LoginPage() {
       <h1>Login</h1>
       <section>
         <form onSubmit={handleSubmit}>
+          <article>
           <input
             name="email"
             type="email"
@@ -52,8 +53,9 @@ function LoginPage() {
             required
             disabled={loading}
           />
-
-          <input
+          </article>
+          <article>
+            <input
             name="password"
             type="password"
             placeholder="Enter your Password"
@@ -62,6 +64,8 @@ function LoginPage() {
             required
             disabled={loading}
           />
+          </article>
+          
           
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}

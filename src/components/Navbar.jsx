@@ -35,7 +35,7 @@ function Navbar() {
         {user ? (
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <span>Welcome, {user.name}!</span>
-            <a href="/my-books">My Books</a>
+            <a href="/mybooks">My Books</a>
             <button 
               onClick={handleLogout}
               style={{

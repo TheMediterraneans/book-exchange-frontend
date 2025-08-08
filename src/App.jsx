@@ -13,12 +13,39 @@ import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
 import ReservationForm from './pages/ReservationForm'
 import ProtectedRoute from './components/ProtectedRoutes'
+import AddCopy from "./pages/AddCopy"
 
 function App() {
 
-  const createNewBookCopy = (newCopy) {
+  const addBookCopy = async (bookCopyData) => {
+  try {
+    const storedToken = localStorage.getItem("authToken");
     
+    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/mybooks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${storedToken}`,
+      },
+      body: JSON.stringify(bookCopyData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to add book to library");
+    }
+
+    const newBookCopy = await response.json();
+    
+    //update the status of books in the library
+    // setMyBooks(prevBooks => [...prevBooks, newBookCopy]);
+    
+    return newBookCopy;
+  } catch (error) {
+    console.error("Error adding book copy:", error);
+    throw error;
   }
+};
   
   return (
     <AuthProvider>
@@ -33,6 +60,7 @@ function App() {
         <Route path="/login" element={<LoginPage/>} />
         <Route path='/mybooks' element={<UserBooksPage/>} />
         <Route path="/reserve" element={<ReservationForm/>} />
+        <Route path='/mybooks' element={<AddCopy addBookCopy={addBookCopy}/>} />
         
       </Routes>
 

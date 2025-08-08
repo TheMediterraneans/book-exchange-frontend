@@ -2,18 +2,17 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function ReservationForm() {
+function ReservationPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Get the book and copies data passed from BookSearch
-  const { book, availableCopies } = location.state || {};
-  
+
+  const { book, availableCopies } = location.state || {};  // get book and copies data passed from BookSearch
+
   const [selectedCopyId, setSelectedCopyId] = useState('');
   const [requestedDays, setRequestedDays] = useState(7);
   const [loading, setLoading] = useState(false);
 
-  // Redirect if no data was passed
+  // redirect if no data was passed
   useEffect(() => {
     if (!book || !availableCopies) {
       navigate('/all-books');
@@ -22,7 +21,7 @@ function ReservationForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!selectedCopyId) {
       alert('Please select a copy');
       return;
@@ -30,10 +29,8 @@ function ReservationForm() {
 
     setLoading(true);
 
-    // Get the auth token from localStorage
-    const authToken = localStorage.getItem('authToken');
-    
-    // Send reservation request
+    const authToken = localStorage.getItem('authToken');  // get auth token from localStorage
+
     axios.post('http://localhost:5005/api/reservations', {
       bookCopyId: selectedCopyId,
       requestedDays: parseInt(requestedDays)
@@ -42,29 +39,27 @@ function ReservationForm() {
         Authorization: `Bearer ${authToken}`
       }
     })
-    .then(() => {
-      alert('Reservation created successfully!');
-      navigate('/mybooks'); // Navigate to user's books page
-    })
-    .catch((err) => {
-      // Handle errors
-      if (err.response) {
-        if (err.response.status === 401) {
-          alert('Error: Authentication failed. You may need to log in again.');
+      .then(() => {
+        alert('Reservation created successfully!');
+        navigate('/mybooks');
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            alert('Error: Authentication failed. You may need to log in again.');
+          } else {
+            const errorMsg = err.response.data?.error || err.response.data?.message || 'Server error';
+            alert('Error: ' + errorMsg);
+          }
         } else {
-          const errorMsg = err.response.data?.error || err.response.data?.message || 'Server error';
-          alert('Error: ' + errorMsg);
+          alert('Error: Could not connect to server.');
         }
-      } else {
-        alert('Error: Could not connect to server.');
-      }
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-  // Don't render if no data
   if (!book || !availableCopies) {
     return <div>Loading...</div>;
   }
@@ -72,23 +67,23 @@ function ReservationForm() {
   return (
     <div>
       <h1>Reserve Book</h1>
-      
+
       <div>
         <h2>{book.title}</h2>
         <p><strong>Authors:</strong> {book.authors && book.authors.join(', ')}</p>
         {book.coverUrl && <img src={book.coverUrl} alt={book.title} width="100" />}
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>
             <strong>Select Copy:</strong>
             <br />
-            <select 
-              value={selectedCopyId} 
+            <select
+              value={selectedCopyId}
               onChange={(e) => setSelectedCopyId(e.target.value)}
               required
->
+            >
               <option value="">Choose a copy...</option>
               {availableCopies.map((copy) => (
                 <option key={copy._id} value={copy._id}>
@@ -103,7 +98,7 @@ function ReservationForm() {
           <label>
             <strong>Loan Duration (days):</strong>
             <br />
-            <input 
+            <input
               type="number"
               min="1"
               max="30"
@@ -116,15 +111,15 @@ function ReservationForm() {
         </div>
 
         <div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
           >
             {loading ? 'Creating...' : 'Confirm Reservation'}
           </button>
-          
-          <button 
-            type="button" 
+
+          <button
+            type="button"
             onClick={() => navigate('/all-books')}
           >
             Cancel
@@ -135,4 +130,4 @@ function ReservationForm() {
   );
 }
 
-export default ReservationForm;
+export default ReservationPage;

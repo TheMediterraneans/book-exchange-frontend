@@ -11,12 +11,13 @@ import AllBooks from './pages/AllBooks'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
-import ReservationForm from './pages/ReservationForm'
+import ReservationPage from './pages/ReservationPage'
 import ProtectedRoute from './components/ProtectedRoutes'
 import AddCopy from "./pages/AddCopy"
 
 function App() {
 
+<<<<<<< HEAD
   const addBookCopy = async (bookCopyData) => {
   try {
     const storedToken = localStorage.getItem("authToken");
@@ -46,6 +47,8 @@ function App() {
     throw error;
   }
 };
+=======
+>>>>>>> d67aa7fec1cbc838ba3f6522efd689b99f8a27ee
   
   return (
     <AuthProvider>
@@ -59,8 +62,12 @@ function App() {
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
         <Route path='/mybooks' element={<UserBooksPage/>} />
+<<<<<<< HEAD
         <Route path="/reserve" element={<ReservationForm/>} />
         <Route path='/mybooks' element={<AddCopy addBookCopy={addBookCopy}/>} />
+=======
+        <Route path="/reserve" element={<ReservationPage/>} />
+>>>>>>> d67aa7fec1cbc838ba3f6522efd689b99f8a27ee
         
       </Routes>
 

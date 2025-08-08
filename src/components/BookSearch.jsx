@@ -19,7 +19,7 @@ function BookSearch() {
 
         // fetch available copies for each book
         response.data.forEach((book) => {
-          
+
           const externalId = book.key || book.id; // choose correct externalId for the book
 
           if (!externalId)
@@ -32,8 +32,8 @@ function BookSearch() {
                 return newMap;
               });
             })
-            .catch((err) => {
-              console.error('Error fetching copies for book:', externalId, err);
+            .catch((error) => {
+              console.error('Error fetching copies for book:', externalId, error);
               // set empty array for books with no copies or errors
               setCopiesForBook((prev) => {
                 const newMap = { ...prev };
@@ -43,7 +43,7 @@ function BookSearch() {
             });
         });
       })
-      .catch((err) => { console.error('Search error', err); });
+      .catch((error) => { console.error('Search error', error); });
   };
 
   const beginReserve = (book, copies) => {

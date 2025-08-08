@@ -4,8 +4,7 @@ function UserBooksPage() {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    logout();
-    // Will automatically redirect due to ProtectedRoute
+    logout(); // automatically redirect due to ProtectedRoute
   };
 
   return (

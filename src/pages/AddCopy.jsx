@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom"
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import "../components/addCopy.css";
+
 function AddCopy({ addBookCopy }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -9,67 +12,83 @@ function AddCopy({ addBookCopy }) {
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-    // Function to search books from external APIs
-    const searchBooks = async (query) => {
-        if (!query.trim()) return;
+
+    // Function to search books using the same logic as BookSearch
+    const doSearch = (e) => {
+        e.preventDefault();
+        
+        if (!searchTerm.trim()) return;
+        
         setIsLoading(true);
-        try {
-            // Replace with your actual API endpoint for book search
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/books/search?q=${encodeURIComponent(query)}`);
-            const data = await response.json();
-            setSearchResults(data.books || []);
-        } catch (error) {
-            console.error('Error searching books:', error);
-            setSearchResults([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    // Debounced search
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (searchTerm) {
-                searchBooks(searchTerm);
-            } else {
+        setSearchResults([]);
+        setSelectedBook(null);
+
+        axios.get('http://localhost:5005/api/search-books', { params: { q: searchTerm } })
+            .then((response) => {
+                setSearchResults(response.data);
+            })
+            .catch((err) => {
+                console.error('Search error', err);
                 setSearchResults([]);
-            }
-        }, 500);
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
     const handleBookSelect = (book) => {
         setSelectedBook(book);
-        setSearchResults([]); // Hide search results after selection
     };
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!selectedBook) {
-            alert('Please select a book first');
-            return;
-        }
-        setIsSubmitting(true);
-        try {
-            const bookCopyData = {
-                apiBookId: selectedBook.id,
-                maxDuration: parseInt(maxDuration)
-            };
-            await addBookCopy(bookCopyData);
-            // Reset form
-            setSelectedBook(null);
-            setSearchTerm('');
-            setMaxDuration(14);
+    e.preventDefault();
+    
+    if (!selectedBook) {
+        alert('Please select a book first');
+        return;
+    }
 
-            // Navigate back to library or show success message
-            navigate('/my-library');
-        } catch (error) {
-            console.error('Error adding book to library:', error);
-            alert('Error adding book to library. Please try again.');
-        } finally {
-            setIsSubmitting(false);
+    setIsSubmitting(true);
+    try {
+        // Debug: log the selected book to see its structure
+        console.log('Selected book:', selectedBook);
+        
+        const externalId = selectedBook.key || selectedBook.id;
+        console.log('External ID:', externalId);
+        
+        if (!externalId) {
+            throw new Error('No valid external ID found for this book');
         }
-    };
-    const clearSelection = () => {
+        
+        const bookCopyData = {
+            externalId: externalId,
+            title: selectedBook.title,
+            authors: selectedBook.authors || [],
+            coverUrl: selectedBook.coverUrl || null,
+            publishedYear: selectedBook.publishedYear || null,
+            maxDuration: parseInt(maxDuration)
+        };
+
+        console.log('Book copy data being sent:', bookCopyData);
+        await addBookCopy(bookCopyData);
+        
+        // Reset form
         setSelectedBook(null);
         setSearchTerm('');
+        setSearchResults([]);
+        setMaxDuration(14);
+        
+        // Navigate back to library
+        navigate('/mybooks');
+    } catch (error) {
+        console.error('Error adding book to library:', error);
+        alert('Error adding book to library. Please try again.');
+    } finally {
+        setIsSubmitting(false);
+    }
+};
+
+    const clearSelection = () => {
+        setSelectedBook(null);
     };
     return (
         <div className="add-copy-container">
@@ -78,15 +97,24 @@ function AddCopy({ addBookCopy }) {
                 {/* Book Search Section */}
                 <div className="search-section">
                     <label htmlFor="book-search">Search for a book:</label>
-                    <input
-                        id="book-search"
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Enter book title, author, or ISBN..."
-                        disabled={selectedBook !== null}
-                        className="search-input"
-                    />
+                    <div className="search-input-group">
+                        <input
+                            id="book-search"
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Enter book title, author, or ISBN..."
+                            className="search-input"
+                        />
+                        <button 
+                            type="button" 
+                            onClick={doSearch}
+                            className="search-btn"
+                        >
+                            Search
+                        </button>
+                    </div>
+                    
                     {selectedBook && (
                         <button
                             type="button"
@@ -105,32 +133,37 @@ function AddCopy({ addBookCopy }) {
                     <div className="search-results">
                         <h3>Search Results:</h3>
                         <ul className="book-list">
-                            {searchResults.map((book) => (
-                                <li
-                                    key={book.id}
-                                    onClick={() => handleBookSelect(book)}
-                                    className="book-item"
-                                >
-                                    <div className="book-info">
-                                        {book.thumbnail && (
-                                            <img
-                                                src={book.thumbnail}
-                                                alt={book.title}
-                                                className="book-thumbnail"
-                                            />
-                                        )}
-                                        <div className="book-details">
-                                            <h4>{book.title}</h4>
-                                            {book.authors && (
-                                                <p>by {book.authors.join(', ')}</p>
+                            {searchResults.map((book) => {
+                                const externalId = book.key || book.id;
+                                
+                                return (
+                                    <li 
+                                        key={externalId} 
+                                        onClick={() => handleBookSelect(book)}
+                                        className="book-item"
+                                    >
+                                        <div className="book-info">
+                                            {book.coverUrl && (
+                                                <img 
+                                                    src={book.coverUrl} 
+                                                    alt={book.title}
+                                                    className="book-thumbnail"
+                                                />
                                             )}
-                                            {book.publishedDate && (
-                                                <p>Published: {book.publishedDate}</p>
-                                            )}
+                                            <div className="book-details">
+                                                <h4>{book.title}</h4>
+                                                {book.authors && book.authors.length > 0 && (
+                                                    <p>by {book.authors.join(', ')}</p>
+                                                )}
+                                                {book.publishedYear && (
+                                                    <p>Published: {book.publishedYear}</p>
+                                                )}
+                                                <p className="source-tag">Source: {book.source}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                            ))}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 )}
@@ -139,30 +172,22 @@ function AddCopy({ addBookCopy }) {
                     <div className="selected-book">
                         <h3>Selected Book:</h3>
                         <div className="book-preview">
-                            {selectedBook.thumbnail && (
-                                <img
-                                    src={selectedBook.thumbnail}
+                            {selectedBook.coverUrl && (
+                                <img 
+                                    src={selectedBook.coverUrl} 
                                     alt={selectedBook.title}
                                     className="book-thumbnail-large"
                                 />
                             )}
                             <div className="book-details">
                                 <h4>{selectedBook.title}</h4>
-                                {selectedBook.authors && (
+                                {selectedBook.authors && selectedBook.authors.length > 0 && (
                                     <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
                                 )}
-                                {selectedBook.publishedDate && (
-                                    <p><strong>Published:</strong> {selectedBook.publishedDate}</p>
+                                {selectedBook.publishedYear && (
+                                    <p><strong>Published:</strong> {selectedBook.publishedYear}</p>
                                 )}
-                                {selectedBook.description && (
-                                    <p className="description">
-                                        <strong>Description:</strong>
-                                        {selectedBook.description.length > 200
-                                            ? `${selectedBook.description.substring(0, 200)}...`
-                                            : selectedBook.description
-                                        }
-                                    </p>
-                                )}
+                                <p><strong>Source:</strong> {selectedBook.source}</p>
                             </div>
                         </div>
                     </div>

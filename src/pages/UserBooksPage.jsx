@@ -1,60 +1,129 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import "./UserBooksPage.css";
 
 function UserBooksPage() {
   const { user, logout } = useAuth();
-  const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [myBooks, setMyBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch user's reservations when component mounts
+  // Fetch user's books when component mounts
   useEffect(() => {
-    const fetchReservations = () => {
-      const authToken = localStorage.getItem('authToken');
+    fetchMyBooks();
+  }, []);
+
+  const fetchMyBooks = async () => {
+    try {
+      const storedToken = localStorage.getItem("authToken");
       
-      if (!authToken) {
-        setError('No authentication token found');
-        setLoading(false);
-        return;
+      if (!storedToken) {
+        throw new Error("No authentication token found");
       }
 
-      axios.get('http://localhost:5005/api/reservations', {
+      const response = await fetch("http://localhost:5005/api/mybooks", {
         headers: {
-          Authorization: `Bearer ${authToken}`
-        }
-      })
-      .then((response) => {
-        console.log('Reservations fetched:', response.data);
-        setReservations(response.data);
-        setError(null);
-      })
-      .catch((error) => {
-        console.error('Error fetching reservations:', error);
-        if (err.response?.status === 401) {
-          setError('Authentication failed. Please log in again.');
-        } else {
-          setError('Failed to load reservations.');
-        }
-      })
-      .finally(() => {
-        setLoading(false);
+          "Authorization": `Bearer ${storedToken}`,
+        },
       });
-    };
 
-    // Only fetch if user is available
-    if (user) {
-      fetchReservations();
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+
+      const books = await response.json();
+      setMyBooks(books);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
-  }, [user]);
+  };
 
+  const handleLogout = () => {
+    logout(); // automatically redirect due to ProtectedRoute
+  };
+
+  if (isLoading) {
+    return <div>Loading your books...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
+      <h1>Welcome to your books!</h1>
+      
+      <button 
+        onClick={handleLogout}
+        style={{
+          backgroundColor: "#dc3545",
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginBottom: "20px"
+        }}
+      >
+        Logout
+      </button>
+      
       {/* Your books content here */}
       <div>
-        <h2>Your Books</h2>
-        <p>Here will be your books...</p>
+        <h2>Your Books ({myBooks.length})</h2>
+        
+        <Link to="/mybooks/add">
+          <button style={{
+            backgroundColor: "purple",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginBottom: "20px"
+          }}>
+            Add a new book to your library
+          </button>
+        </Link>
+
+        {myBooks.length === 0 ? (
+          <p>You don't have any books in your library yet. Add your first book!</p>
+        ) : (
+                     <div className="books-grid">
+             {myBooks.map((book) => (
+               <div key={book._id} className="book-card">
+                 {book.coverUrl && (
+                   <img 
+                     src={book.coverUrl} 
+                     alt={book.title}
+                     className="book-cover"
+                   />
+                 )}
+                 <div className="book-info">
+                   <h3>{book.title}</h3>
+                   {book.authors && book.authors.length > 0 && (
+                     <p className="book-authors">by {book.authors.join(', ')}</p>
+                   )}
+                   {book.publishedYear && (
+                     <p className="book-year">Published: {book.publishedYear}</p>
+                   )}
+                   <p className="book-status">
+                     <strong>Status:</strong> 
+                     <span className={book.isAvailable ? "status-available" : "status-unavailable"}>
+                       {book.isAvailable ? " Available" : " Not Available"}
+                     </span>
+                   </p>
+                   <p><strong>Max Duration:</strong> {book.maxDuration} days</p>
+                 </div>
+               </div>
+             ))}
+           </div>
+        )}
       </div>
 
       <section>

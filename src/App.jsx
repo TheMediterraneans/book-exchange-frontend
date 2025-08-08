@@ -15,6 +15,10 @@ import ProtectedRoute from './components/ProtectedRoutes'
 import { AuthProvider } from './contexts/AuthContext'
 
 function App() {
+
+  const createNewBookCopy = (newCopy) {
+    
+  }
   
   return (
     <AuthProvider>

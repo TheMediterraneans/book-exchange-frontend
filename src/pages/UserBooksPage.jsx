@@ -11,7 +11,7 @@ function UserBooksPage() {
   return (
     <div>
       <h1>Welcome to your books!</h1>
-      <p>Email: {user.email}</p>
+      
       
       <button 
         onClick={handleLogout}
@@ -31,8 +31,20 @@ function UserBooksPage() {
       {/* Your books content here */}
       <div>
         <h2>Your Books</h2>
-        <p>Here will be your books...</p>
+        <p>Your library...</p>
+
+        <button style={{backgroundColor: "purple",
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: "4px",
+          cursor: "pointer",
+          marginBottom: "20px"}}>Add a new book to your library</button>
       </div>
+
+      <section>
+        <h2>Your reservation</h2>
+      </section>
     </div>
   );
 }

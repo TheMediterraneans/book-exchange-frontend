@@ -11,14 +11,11 @@ import AllBooks from './pages/AllBooks'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
-import ReservationForm from './pages/ReservationForm'
+import ReservationPage from './pages/ReservationPage'
 import ProtectedRoute from './components/ProtectedRoutes'
 
 function App() {
 
-  const createNewBookCopy = (newCopy) {
-    
-  }
   
   return (
     <AuthProvider>
@@ -32,7 +29,7 @@ function App() {
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
         <Route path='/mybooks' element={<UserBooksPage/>} />
-        <Route path="/reserve" element={<ReservationForm/>} />
+        <Route path="/reserve" element={<ReservationPage/>} />
         
       </Routes>
 

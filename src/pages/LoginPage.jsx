@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // ADD THIS IMPORT
+import { useAuth } from "../contexts/AuthContext";
 import { login as loginService, verify } from "../services/auth.services";
 
 function LoginPage() {
@@ -8,7 +8,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // ADD THIS LINE
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,11 +25,11 @@ function LoginPage() {
       const token = response.data.authToken;
 
       localStorage.setItem("authToken", token);
-      
-      // MODIFY THIS PART - Get user data and update context
+
+      // get user data and update context
       const userResponse = await verify();
-      login(userResponse.data); // Update global state
-      
+      login(userResponse.data);
+
       navigate("/all-books");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
@@ -62,14 +62,14 @@ function LoginPage() {
             required
             disabled={loading}
           />
-          
+
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
-          
+
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
-        
+
         <p>
           Don't have an account? <a href="/signup">Sign up here</a>
         </p>

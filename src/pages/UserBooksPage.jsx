@@ -25,7 +25,7 @@ function UserBooksPage(props) {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/`, {
+      const response = await fetch(`http://localhost:5005/api/mybooks/`, {
         headers: {
           "Authorization": `Bearer ${storedToken}`,
         },
@@ -171,52 +171,7 @@ function UserBooksPage(props) {
         )}
       </div>
 
-      <section>
-        <h2>Your Reservations</h2>
-        
-        {loading && <p>Loading reservations...</p>}
-        
-        {error && (
-          <div style={{ color: 'red', padding: '10px', backgroundColor: '#fee' }}>
-            {error}
-          </div>
-        )}
-        
-        {!loading && !error && reservations.length === 0 && (
-          <p>You haven't made any reservations yet.</p>
-        )}
-        
-        {!loading && !error && reservations.length > 0 && (
-          <div>
-            {reservations.map((reservation) => (
-              <div key={reservation._id}>
-                <h3>Book Copy ID: {reservation.book?._id?.slice(-6) || 'Unknown'}</h3>
-                <p><strong>Start Date:</strong> {new Date(reservation.startDate).toLocaleDateString()}</p>
-                <p><strong>End Date:</strong> {new Date(reservation.endDate).toLocaleDateString()}</p>
-                <p><strong>Status:</strong> {
-                  new Date() > new Date(reservation.endDate) ? 
-                  'Overdue' : 
-                  new Date() < new Date(reservation.startDate) ? 
-                  'Upcoming' : 
-                  'Active'
-                }</p>
-                
-                {/* Display book copy details if available */}
-                {reservation.book && (
-                  <div>
-                    <p><strong>Copy Details:</strong></p>
-                    <p>ID: {reservation.book._id}</p>
-                    {reservation.book.title && <p>Title: {reservation.book.title}</p>}
-                    {reservation.book.externalId && <p>External ID: {reservation.book.externalId}</p>}
-                    {reservation.book.condition && <p>Condition: {reservation.book.condition}</p>}
-                    {reservation.book.location && <p>Location: {reservation.book.location}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      
     </div>
   );
 }

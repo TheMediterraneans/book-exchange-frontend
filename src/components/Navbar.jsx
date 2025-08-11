@@ -35,6 +35,7 @@ function Navbar() {
         {user ? (
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <span>Welcome, {user.name}!</span>
+            <a href="/copies">Find Books</a>
             <a href="/mybooks">My Books</a>
             <button 
               onClick={handleLogout}
@@ -52,6 +53,7 @@ function Navbar() {
           </div>
         ) : (
           <div style={{ display: "flex", gap: "1rem" }}>
+            <a href="/copies">Find Books</a>
             <a href="/login">Login</a>
             <a href="/signup">Sign Up</a>
           </div>

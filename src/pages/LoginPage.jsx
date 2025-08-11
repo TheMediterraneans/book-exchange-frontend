@@ -30,7 +30,14 @@ function LoginPage() {
       const userResponse = await verify();
       login(userResponse.data);
 
-      navigate("/all-books");
+      // Check if there's a stored redirect location (from BookDetailPage)
+      const redirectLocation = sessionStorage.getItem('redirectAfterLogin');
+      if (redirectLocation) {
+        sessionStorage.removeItem('redirectAfterLogin'); // Clean up
+        navigate(redirectLocation);
+      } else {
+        navigate("/mybooks");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
     } finally {

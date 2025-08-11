@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function BookSearch() {
+function SearchBookToLend() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [copiesForBook, setCopiesForBook] = useState({});  // { externalId: [{BookCopy}] }
@@ -111,4 +111,4 @@ function BookSearch() {
   );
 }
 
-export default BookSearch;
+export default SearchBookToLend;

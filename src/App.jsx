@@ -4,14 +4,15 @@ import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import PageNotFound from './pages/PageNotFound'
 import { AuthProvider } from './contexts/AuthContext'
-import AllBooks from './pages/AllBooks'
+
+import Copies from './pages/Copies'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
 import ReservationPage from './pages/ReservationPage'
 import ProtectedRoute from './components/ProtectedRoutes'
 import AddCopy from "./pages/AddCopy"
-// Remove the DeleteBookCopy import since it doesn't exist
+import BookDetailPage from './pages/BookDetailPage'
 
 function App() {
   
@@ -80,8 +81,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/*" element={<PageNotFound/>} />
-        <Route path="/all-books" element={<AllBooks/>} />
+        <Route path="/copies" element={<Copies/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
         {/* Fix: Pass deleteCopy to the main mybooks route */}

@@ -15,7 +15,7 @@ function ReservationPage() {
   // redirect if no data was passed
   useEffect(() => {
     if (!book || !availableCopies) {
-      navigate('/all-books');
+      navigate('/copies');
     }
   }, [book, availableCopies, navigate]);
 
@@ -120,7 +120,7 @@ function ReservationPage() {
 
           <button
             type="button"
-            onClick={() => navigate('/all-books')}
+            onClick={() => navigate('/copies')}
           >
             Cancel
           </button>

@@ -106,6 +106,7 @@ function BookDetailPage() {
 
     return (
         <div style={{ padding: '20px', maxWidth: '800px' }}>
+           {/* <button onClick={() => navigate(-1)}>Back to the previous page</button> */}
             <h1 style={{ borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>
                 {book.title}
             </h1>

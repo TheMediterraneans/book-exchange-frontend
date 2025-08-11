@@ -3,10 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "../components/addCopy.css";
 
-function AddCopy() {
+function AddCopy({ addBookCopy }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [maxDuration, setMaxDuration] = useState(14);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -26,7 +29,7 @@ function AddCopy() {
 
         setIsLoading(true);
         
-        axios.get('http://localhost:5005/api/search-books', { 
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/search-books`, { 
             params: { q: term } 
         })
             .then(response => {
@@ -95,14 +98,6 @@ function AddCopy() {
 
     const clearSelection = () => {
         setSelectedBook(null);
-        // Navigate to book detail page with book data
-        const externalId = book.key || book.id || 'unknown';
-        const encodedId = encodeURIComponent(externalId);
-        navigate(`/book/${encodedId}`, {
-            state: {
-                book: book
-            }
-        });
     };
 
     return (
@@ -169,6 +164,39 @@ function AddCopy() {
                                     </div>
                                 );
                             })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Selected Book and submission form */}
+                {selectedBook && (
+                    <div className="selected-book">
+                        <h3>{selectedBook.title}</h3>
+                        {selectedBook.coverUrl && (
+                            <img src={selectedBook.coverUrl} alt={selectedBook.title} className="book-cover" />
+                        )}
+                        {selectedBook.authors?.length > 0 && (
+                            <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
+                        )}
+                        {selectedBook.publishedYear && (
+                            <p><strong>Year:</strong> {selectedBook.publishedYear}</p>
+                        )}
+                        <div className="form-row">
+                            <label htmlFor="duration">Max loan days:</label>
+                            <input
+                                id="duration"
+                                type="number"
+                                min={1}
+                                max={30}
+                                value={maxDuration}
+                                onChange={(e) => setMaxDuration(Number(e.target.value))}
+                            />
+                        </div>
+                        <div className="actions">
+                            <button type="button" onClick={clearSelection} className="cancel-btn">Cancel</button>
+                            <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="submit-btn">
+                                {isSubmitting ? 'Adding...' : 'Add to my library'}
+                            </button>
                         </div>
                     </div>
                 )}

@@ -56,7 +56,7 @@ function App() {
       }
 
       // Fix: Use the actual server URL, not the string literal
-      const response = await fetch(`http://localhost:5005/api/mybooks/${mybookId}`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/${mybookId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${storedToken}`,

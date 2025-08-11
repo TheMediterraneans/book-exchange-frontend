@@ -25,7 +25,7 @@ function UserBooksPage(props) {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`http://localhost:5005/api/mybooks/`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/`, {
         headers: {
           "Authorization": `Bearer ${storedToken}`,
         },
@@ -119,8 +119,9 @@ function UserBooksPage(props) {
                      className="book-cover"
                    />
                  )}
+                 <span><h3>{book.title}</h3></span>
                  <div className="book-info">
-                   <h3>{book.title}</h3>
+                  
                   
                     {book.authors && book.authors.length > 0 && (
                      <p className="book-authors">by {book.authors.join(', ')}</p>
@@ -135,9 +136,7 @@ function UserBooksPage(props) {
                      </span>
                    </p>
 
-                   <p>
-                  <strong>Max Duration:</strong> {book.maxDuration || 14} days
-                  </p>
+                  {/* Removed Max Duration display as requested */}
                   {!book.isAvailable && book.reservation && (
                     <div className="reservation-info">
                       <p className="reservation-start">

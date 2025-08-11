@@ -3,11 +3,14 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import "./UserBooksPage.css";
 
-function UserBooksPage() {
+
+function UserBooksPage(props) {
   const { user, logout } = useAuth();
   const [myBooks, setMyBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const {onDelete} = props;
 
   // Fetch user's books when component mounts
   useEffect(() => {
@@ -22,7 +25,7 @@ function UserBooksPage() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://localhost:5005/api/mybooks", {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/`, {
         headers: {
           "Authorization": `Bearer ${storedToken}`,
         },
@@ -54,6 +57,18 @@ function UserBooksPage() {
     return <div>Error: {error}</div>;
   }
 
+   const handleDelete = async (bookId) => {
+    try {
+      await onDelete(bookId);
+      setMyBooks(prevBooks => prevBooks.filter(book => book._id !== bookId));
+    } catch (error) {
+      setError(error.message || "Failed to delete book from the library")
+    }
+
+
+ 
+  }
+
   return (
     <div>
       <h1>Welcome to your books!</h1>
@@ -73,7 +88,7 @@ function UserBooksPage() {
         Logout
       </button>
       
-      {/* Your books content here */}
+      {/* books content here */}
       <div>
         <h2>Your Books ({myBooks.length})</h2>
         
@@ -106,10 +121,11 @@ function UserBooksPage() {
                  )}
                  <div className="book-info">
                    <h3>{book.title}</h3>
-                   {book.authors && book.authors.length > 0 && (
+                  
+                    {book.authors && book.authors.length > 0 && (
                      <p className="book-authors">by {book.authors.join(', ')}</p>
                    )}
-                   {book.publishedYear && (
+                    {book.publishedYear && (
                      <p className="book-year">Published: {book.publishedYear}</p>
                    )}
                    <p className="book-status">
@@ -118,8 +134,37 @@ function UserBooksPage() {
                        {book.isAvailable ? " Available" : " Not Available"}
                      </span>
                    </p>
-                   <p><strong>Max Duration:</strong> {book.maxDuration} days</p>
+
+                   <p>
+                  <strong>Max Duration:</strong> {book.maxDuration || 14} days
+                  </p>
+                  {!book.isAvailable && book.reservation && (
+                    <div className="reservation-info">
+                      <p className="reservation-start">
+                        <strong>Reserved from:</strong> {" "}
+                        {new Date(book.reservation.startDate).toLocaleDateString()}
+                      </p>
+                      {book.reservation.endDate && (
+                        <p className="reservation-end">
+                          <strong>Until:</strong> {" "}
+                          {new Date(book.reservation.endDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                  )}
                  </div>
+                 <button onClick={() => handleDelete(book._id)} 
+                 style={{
+                    backgroundColor: "#dc3545",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    marginTop: "10px"
+                  }}>
+                   Delete book from your library
+                 </button>
                </div>
              ))}
            </div>

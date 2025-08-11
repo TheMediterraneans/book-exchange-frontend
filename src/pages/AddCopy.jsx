@@ -82,7 +82,7 @@ function AddCopy({ addBookCopy }) {
         navigate('/mybooks');
     } catch (error) {
         console.error('Error adding book to library:', error);
-        alert('Error adding book to library. Please try again.');
+        alert('Error adding book to library. Please try again.'); //alert to style
     } finally {
         setIsSubmitting(false);
     }
@@ -131,7 +131,7 @@ function AddCopy({ addBookCopy }) {
 
                 {/* Search Results */}
                 {isLoading && (
-                    <div className="loading">Searching books...</div>
+                    <div className="loading">Searching books...</div> //add style
                 )}
 
                 {searchResults.length > 0 && !selectedBook && (

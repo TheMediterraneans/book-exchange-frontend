@@ -39,7 +39,6 @@ function AddCopy({ addBookCopy }) {
     const handleBookSelect = (book) => {
         setSelectedBook(book);
     };
-
     const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -91,11 +90,9 @@ function AddCopy({ addBookCopy }) {
     const clearSelection = () => {
         setSelectedBook(null);
     };
-
     return (
         <div className="add-copy-container">
             <h1>Add Book to Your Library</h1>
-            
             <form onSubmit={handleSubmit} className="add-copy-form">
                 {/* Book Search Section */}
                 <div className="search-section">
@@ -119,8 +116,8 @@ function AddCopy({ addBookCopy }) {
                     </div>
                     
                     {selectedBook && (
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={clearSelection}
                             className="clear-selection-btn"
                         >
@@ -128,12 +125,10 @@ function AddCopy({ addBookCopy }) {
                         </button>
                     )}
                 </div>
-
                 {/* Search Results */}
                 {isLoading && (
                     <div className="loading">Searching books...</div> //add style
                 )}
-
                 {searchResults.length > 0 && !selectedBook && (
                     <div className="search-results">
                         <h3>Search Results:</h3>
@@ -172,7 +167,6 @@ function AddCopy({ addBookCopy }) {
                         </ul>
                     </div>
                 )}
-
                 {/* Selected Book Display */}
                 {selectedBook && (
                     <div className="selected-book">
@@ -198,7 +192,6 @@ function AddCopy({ addBookCopy }) {
                         </div>
                     </div>
                 )}
-
                 {/* Duration Setting */}
                 <div className="duration-section">
                     <label htmlFor="max-duration">Maximum loan duration (days):</label>
@@ -213,10 +206,9 @@ function AddCopy({ addBookCopy }) {
                     />
                     <small>Choose how many days you're willing to lend this book (1-30 days)</small>
                 </div>
-
                 {/* Submit Button */}
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     disabled={!selectedBook || isSubmitting}
                     className="submit-btn"
                 >

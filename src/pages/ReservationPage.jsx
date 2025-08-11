@@ -41,7 +41,7 @@ function ReservationPage() {
     })
       .then(() => {
         alert('Reservation created successfully!');
-        navigate('/mybooks');
+        navigate('/mybooks'); // navigate to user's page to see new reservations
       })
       .catch((err) => {
         if (err.response) {

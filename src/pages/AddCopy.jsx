@@ -3,13 +3,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "../components/addCopy.css";
 
-function AddCopy({ addBookCopy }) {
+function AddCopy() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [maxDuration, setMaxDuration] = useState(14);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -46,63 +43,15 @@ function AddCopy({ addBookCopy }) {
     };
 
     const handleBookSelect = (book) => {
-        setSelectedBook(book);
+        // Navigate to BookDetailPage with book data via state
+        // Using a static route to avoid issues with Open Library IDs containing slashes
+        navigate('/book-detail', { 
+            state: { book } 
+        });
     };
-    const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!selectedBook) {
-        alert('Please select a book first');
-        return;
-    }
-
-    setIsSubmitting(true);
-    try {
-        // Debug: log the selected book to see its structure
-        console.log('Selected book:', selectedBook);
-        
-        const externalId = selectedBook.key || selectedBook.id;
-        console.log('External ID:', externalId);
-        
-        if (!externalId) {
-            throw new Error('No valid external ID found for this book');
-        }
-        
-        const bookCopyData = {
-            externalId: externalId,
-            title: selectedBook.title,
-            authors: selectedBook.authors || [],
-            coverUrl: selectedBook.coverUrl || null,
-            publishedYear: selectedBook.publishedYear || null,
-            maxDuration: parseInt(maxDuration)
-        };
-
-        console.log('Book copy data being sent:', bookCopyData);
-        await addBookCopy(bookCopyData);
-        
-        // Reset form
-        setSelectedBook(null);
-        setSearchTerm('');
-        setSearchResults([]);
-        setMaxDuration(14);
-        
-        // Navigate back to library
-        navigate('/mybooks');
-    } catch (error) {
-        console.error('Error adding book to library:', error);
-        alert('Error adding book to library. Please try again.'); //alert to style
-    } finally {
-        setIsSubmitting(false);
-    }
-};
-
-    const clearSelection = () => {
-        setSelectedBook(null);
-    };
-
     return (
         <div className="add-copy-container">
-            <h1>Find Books you want to Lend...</h1>
+            <h1>Offer books to fellow readers...</h1>
             <div className="search-container">
                 {/* Book Search Section */}
                 <div className="search-section">
@@ -135,7 +84,7 @@ function AddCopy({ addBookCopy }) {
                 {isLoading && (
                     <div className="loading">Searching books...</div> //add style
                 )}
-                {searchResults.length > 0 && !selectedBook && (
+                {searchResults.length > 0 && (
                     <div className="search-results">
                         <h3>Search Results:</h3>
                         <div className="results-grid">
@@ -164,39 +113,6 @@ function AddCopy({ addBookCopy }) {
                                     </div>
                                 );
                             })}
-                        </div>
-                    </div>
-                )}
-
-                {/* Selected Book and submission form */}
-                {selectedBook && (
-                    <div className="selected-book">
-                        <h3>{selectedBook.title}</h3>
-                        {selectedBook.coverUrl && (
-                            <img src={selectedBook.coverUrl} alt={selectedBook.title} className="book-cover" />
-                        )}
-                        {selectedBook.authors?.length > 0 && (
-                            <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
-                        )}
-                        {selectedBook.publishedYear && (
-                            <p><strong>Year:</strong> {selectedBook.publishedYear}</p>
-                        )}
-                        <div className="form-row">
-                            <label htmlFor="duration">Max loan days:</label>
-                            <input
-                                id="duration"
-                                type="number"
-                                min={1}
-                                max={30}
-                                value={maxDuration}
-                                onChange={(e) => setMaxDuration(Number(e.target.value))}
-                            />
-                        </div>
-                        <div className="actions">
-                            <button type="button" onClick={clearSelection} className="cancel-btn">Cancel</button>
-                            <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="submit-btn">
-                                {isSubmitting ? 'Adding...' : 'Add to my library'}
-                            </button>
                         </div>
                     </div>
                 )}

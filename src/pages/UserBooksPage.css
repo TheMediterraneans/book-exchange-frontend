@@ -61,6 +61,11 @@
   font-weight: bold;
 }
 
+.status-pending {
+  color: #ffc107;
+  font-weight: bold;
+}
+
 .book-authors {
   color: #666;
   font-style: italic;

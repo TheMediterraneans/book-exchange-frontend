@@ -48,10 +48,20 @@ function SearchBookToLend() {
 
   const beginReserve = (book, copies) => {
     console.log('Navigating to reservation page with:', book, copies);
-    navigate('/reserve', {
+    navigate('/reservation', {
       state: {
         book: book,
         availableCopies: copies
+      }
+    });
+  };
+
+  const viewBookDetails = (book, copies) => {
+    navigate('/book-detail', {
+      state: { 
+        book: book,
+        fromDatabase: true,
+        availableCopies: copies // pass copies info so BookDetailPage can determine actions
       }
     });
   };
@@ -79,30 +89,16 @@ function SearchBookToLend() {
             <strong>{book.title}</strong> — {book.authors && book.authors.join(', ')}
             {book.coverUrl && <img src={book.coverUrl} alt={book.title} width="60" />}
             <br />
-
-            {/* Only show button if copies exist AND user is authenticated */}
-            {copies.length > 0 && !!localStorage.getItem('authToken') ? (
-              <span>
-                <button
-                  onClick={() => {
-                    console.log('Reserve button clicked!', book.title, copies);
-                    beginReserve(book, copies);
-                  }}
-                >
-                  Reserve this book
-                </button>
-                <span> ({copies.length} available)</span>
-              </span>
-            ) : copies.length > 0 ? (
-              <span>
-                <button onClick={() => alert('You need to be logged in to reserve a book')}>
-                  Login to Reserve
-                </button>
-                <span> ({copies.length} available)</span>
-              </span>
-            ) : (
-              <span>No copies available</span>
-            )}
+            
+            {/* Always show View Details button for every book */}
+            <button onClick={() => viewBookDetails(book, copies)}>
+              View Details
+            </button>
+            
+            {/* Show copy count info */}
+            <span style={{ marginLeft: '10px', color: '#666' }}>
+              {copies.length > 0 ? `(${copies.length} copies available)` : '(No copies available)'}
+            </span>
           </div>
         );
       })}

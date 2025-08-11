@@ -1,34 +1,40 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "../components/addCopy.css";
 
-function AddCopy({ addBookCopy }) {
+function AddCopy() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [maxDuration, setMaxDuration] = useState(14);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // Function to search books using the same logic as BookSearch
-    const doSearch = (e) => {
-        e.preventDefault();
-        
-        if (!searchTerm.trim()) return;
-        
+    // Check authentication status - but since this page is now protected, user will always be authenticated
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            console.log("No token found, user should be redirected by ProtectedRoute");
+        }
+    }, []);
+
+    const searchForBooks = (term) => {
+        if (!term.trim()) {
+            setSearchResults([]);
+            return;
+        }
+
         setIsLoading(true);
-        setSearchResults([]);
-        setSelectedBook(null);
-
-        axios.get('http://localhost:5005/api/search-books', { params: { q: searchTerm } })
-            .then((response) => {
+        
+        axios.get('http://localhost:5005/api/search-books', { 
+            params: { q: term } 
+        })
+            .then(response => {
+                console.log('Search response:', response.data);
                 setSearchResults(response.data);
             })
-            .catch((err) => {
-                console.error('Search error', err);
+            .catch(error => {
+                console.error('Search error:', error);
                 setSearchResults([]);
             })
             .finally(() => {
@@ -89,42 +95,47 @@ function AddCopy({ addBookCopy }) {
 
     const clearSelection = () => {
         setSelectedBook(null);
+        // Navigate to book detail page with book data
+        const externalId = book.key || book.id || 'unknown';
+        const encodedId = encodeURIComponent(externalId);
+        navigate(`/book/${encodedId}`, {
+            state: {
+                book: book
+            }
+        });
     };
+
     return (
         <div className="add-copy-container">
-            <h1>Add Book to Your Library</h1>
-            <form onSubmit={handleSubmit} className="add-copy-form">
+            <h1>Find Books you want to Lend...</h1>
+            <div className="search-container">
                 {/* Book Search Section */}
                 <div className="search-section">
                     <label htmlFor="book-search">Search for a book:</label>
-                    <div className="search-input-group">
-                        <input
-                            id="book-search"
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Enter book title, author, or ISBN..."
-                            className="search-input"
-                        />
-                        <button 
-                            type="button" 
-                            onClick={doSearch}
-                            className="search-btn"
-                        >
-                            Search
-                        </button>
-                    </div>
-                    
-                    {selectedBook && (
-                        <button
-                            type="button"
-                            onClick={clearSelection}
-                            className="clear-selection-btn"
-                        >
-                            Change Book
-                        </button>
-                    )}
+                    <input
+                        id="book-search"
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyUp={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                searchForBooks(searchTerm);
+                            }
+                        }}
+                        placeholder="Enter book title, author, or ISBN"
+                        className="search-input"
+                    />
+                    <button 
+                        type="button" 
+                        onClick={() => searchForBooks(searchTerm)}
+                        disabled={isLoading}
+                        className="search-btn"
+                    >
+                        {isLoading ? 'Searching...' : 'Search'}
+                    </button>
                 </div>
+
                 {/* Search Results */}
                 {isLoading && (
                     <div className="loading">Searching books...</div> //add style
@@ -132,89 +143,36 @@ function AddCopy({ addBookCopy }) {
                 {searchResults.length > 0 && !selectedBook && (
                     <div className="search-results">
                         <h3>Search Results:</h3>
-                        <ul className="book-list">
-                            {searchResults.map((book) => {
+                        <div className="results-grid">
+                            {searchResults.map((book, index) => {
                                 const externalId = book.key || book.id;
-                                
                                 return (
-                                    <li 
-                                        key={externalId} 
-                                        onClick={() => handleBookSelect(book)}
-                                        className="book-item"
-                                    >
+                                    <div key={`${externalId}-${index}`} className="book-result">
                                         <div className="book-info">
+                                            <h4>{book.title}</h4>
+                                            <p><strong>Authors:</strong> {book.authors ? book.authors.join(', ') : 'Unknown'}</p>
+                                            <p><strong>Year:</strong> {book.publishedYear || 'Unknown'}</p>
+                                            <p><strong>Source:</strong> {book.source}</p>
                                             {book.coverUrl && (
-                                                <img 
-                                                    src={book.coverUrl} 
-                                                    alt={book.title}
-                                                    className="book-thumbnail"
-                                                />
+                                                <img src={book.coverUrl} alt={book.title} className="book-cover" />
                                             )}
-                                            <div className="book-details">
-                                                <h4>{book.title}</h4>
-                                                {book.authors && book.authors.length > 0 && (
-                                                    <p>by {book.authors.join(', ')}</p>
-                                                )}
-                                                {book.publishedYear && (
-                                                    <p>Published: {book.publishedYear}</p>
-                                                )}
-                                                <p className="source-tag">Source: {book.source}</p>
-                                            </div>
                                         </div>
-                                    </li>
+                                        <div className="book-actions">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleBookSelect(book)}
+                                                className="view-details-btn"
+                                            >
+                                                View Details
+                                            </button>
+                                        </div>
+                                    </div>
                                 );
                             })}
-                        </ul>
-                    </div>
-                )}
-                {/* Selected Book Display */}
-                {selectedBook && (
-                    <div className="selected-book">
-                        <h3>Selected Book:</h3>
-                        <div className="book-preview">
-                            {selectedBook.coverUrl && (
-                                <img 
-                                    src={selectedBook.coverUrl} 
-                                    alt={selectedBook.title}
-                                    className="book-thumbnail-large"
-                                />
-                            )}
-                            <div className="book-details">
-                                <h4>{selectedBook.title}</h4>
-                                {selectedBook.authors && selectedBook.authors.length > 0 && (
-                                    <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
-                                )}
-                                {selectedBook.publishedYear && (
-                                    <p><strong>Published:</strong> {selectedBook.publishedYear}</p>
-                                )}
-                                <p><strong>Source:</strong> {selectedBook.source}</p>
-                            </div>
                         </div>
                     </div>
                 )}
-                {/* Duration Setting */}
-                <div className="duration-section">
-                    <label htmlFor="max-duration">Maximum loan duration (days):</label>
-                    <input
-                        id="max-duration"
-                        type="number"
-                        min="1"
-                        max="30"
-                        value={maxDuration}
-                        onChange={(e) => setMaxDuration(e.target.value)}
-                        className="duration-input"
-                    />
-                    <small>Choose how many days you're willing to lend this book (1-30 days)</small>
-                </div>
-                {/* Submit Button */}
-                <button
-                    type="submit"
-                    disabled={!selectedBook || isSubmitting}
-                    className="submit-btn"
-                >
-                    {isSubmitting ? 'Adding to Library...' : 'Add to My Library'}
-                </button>
-            </form>
+            </div>
         </div>
     );
 }

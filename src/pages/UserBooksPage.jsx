@@ -7,20 +7,24 @@ import "./UserBooksPage.css";
 function UserBooksPage(props) {
   const { user, logout } = useAuth();
   const [myBooks, setMyBooks] = useState([]);
+  const [reservations, setReservations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reservationsLoading, setReservationsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reservationsError, setReservationsError] = useState(null);
 
   const {onDelete} = props;
 
   // Fetch user's books when component mounts
   useEffect(() => {
     fetchMyBooks();
+    fetchReservations();
   }, []);
 
   const fetchMyBooks = async () => {
     try {
       const storedToken = localStorage.getItem("authToken");
-      
+
       if (!storedToken) {
         throw new Error("No authentication token found");
       }
@@ -45,15 +49,45 @@ function UserBooksPage(props) {
     }
   };
 
+  const fetchReservations = async () => {
+    try {
+      const storedToken = localStorage.getItem("authToken");
+
+      if (!storedToken) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch("http://localhost:5005/api/reservations", {
+        headers: {
+          "Authorization": `Bearer ${storedToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch reservations");
+      }
+
+      const userReservations = await response.json();
+      setReservations(userReservations);
+    } catch (error) {
+      console.error("Error fetching reservations:", error);
+      setReservationsError(error.message);
+    } finally {
+      setReservationsLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     logout(); // automatically redirect due to ProtectedRoute
   };
 
   if (isLoading) {
+    console.log("UserBooksPage: Loading books...");
     return <div>Loading your books...</div>;
   }
 
   if (error) {
+    console.log("UserBooksPage: Error loading books:", error);
     return <div>Error: {error}</div>;
   }
 
@@ -70,28 +104,13 @@ function UserBooksPage(props) {
   }
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <h1>Welcome to your books!</h1>
-      
-      <button 
-        onClick={handleLogout}
-        style={{
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          padding: "8px 16px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "20px"
-        }}
-      >
-        Logout
-      </button>
-      
-      {/* books content here */}
+
+      {/* Your books content here */}
       <div>
         <h2>Your Books ({myBooks.length})</h2>
-        
+
         <Link to="/mybooks/add">
           <button style={{
             backgroundColor: "purple",
@@ -170,7 +189,57 @@ function UserBooksPage(props) {
         )}
       </div>
 
-      
+      <section>
+        <h2>Your Reservations</h2>
+
+        {reservationsLoading && <p>Loading reservations...</p>}
+
+        {reservationsError && (
+          <div style={{ color: 'red', padding: '10px', backgroundColor: '#fee' }}>
+            {reservationsError}
+          </div>
+        )}
+
+        {!reservationsLoading && !reservationsError && reservations.length === 0 && (
+          <p>You haven't made any reservations yet.</p>
+        )}
+
+        {!reservationsLoading && !reservationsError && reservations.length > 0 && (
+          <div>
+            {reservations.map((reservation) => (
+              <div key={reservation._id} style={{ 
+                border: '1px solid #ddd', 
+                padding: '15px', 
+                margin: '10px 0',
+                borderRadius: '5px' 
+              }}>
+                <h3>Book Copy ID: {reservation.book?._id?.slice(-6) || 'Unknown'}</h3>
+                <p><strong>Start Date:</strong> {new Date(reservation.startDate).toLocaleDateString()}</p>
+                <p><strong>End Date:</strong> {new Date(reservation.endDate).toLocaleDateString()}</p>
+                <p><strong>Status:</strong> {
+                  new Date() > new Date(reservation.endDate) ?
+                    'Overdue' :
+                    new Date() < new Date(reservation.startDate) ?
+                      'Upcoming' :
+                      'Active'
+                }</p>
+
+                {/* Display book copy details if available */}
+                {reservation.book && (
+                  <div>
+                    <p><strong>Copy Details:</strong></p>
+                    <p>ID: {reservation.book._id}</p>
+                    {reservation.book.title && <p>Title: {reservation.book.title}</p>}
+                    {reservation.book.externalId && <p>External ID: {reservation.book.externalId}</p>}
+                    {reservation.book.condition && <p>Condition: {reservation.book.condition}</p>}
+                    {reservation.book.location && <p>Location: {reservation.book.location}</p>}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

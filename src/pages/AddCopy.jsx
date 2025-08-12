@@ -3,13 +3,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import "../components/addCopy.css";
 
-function AddCopy({ addBookCopy }) {
+function AddCopy() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedBook, setSelectedBook] = useState(null);
-    const [maxDuration, setMaxDuration] = useState(14);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -46,160 +43,87 @@ function AddCopy({ addBookCopy }) {
     };
 
     const handleBookSelect = (book) => {
-        setSelectedBook(book);
+        // Navigate to BookDetailPage with book data via state
+        // Using a static route to avoid issues with Open Library IDs containing slashes
+        navigate('/book-detail', { 
+            state: { book } 
+        });
     };
-    const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!selectedBook) {
-        alert('Please select a book first');
-        return;
-    }
-
-    setIsSubmitting(true);
-    try {
-        // Debug: log the selected book to see its structure
-        console.log('Selected book:', selectedBook);
-        
-        const externalId = selectedBook.key || selectedBook.id;
-        console.log('External ID:', externalId);
-        
-        if (!externalId) {
-            throw new Error('No valid external ID found for this book');
-        }
-        
-        const bookCopyData = {
-            externalId: externalId,
-            title: selectedBook.title,
-            authors: selectedBook.authors || [],
-            coverUrl: selectedBook.coverUrl || null,
-            publishedYear: selectedBook.publishedYear || null,
-            maxDuration: parseInt(maxDuration)
-        };
-
-        console.log('Book copy data being sent:', bookCopyData);
-        await addBookCopy(bookCopyData);
-        
-        // Reset form
-        setSelectedBook(null);
-        setSearchTerm('');
-        setSearchResults([]);
-        setMaxDuration(14);
-        
-        // Navigate back to library
-        navigate('/mybooks');
-    } catch (error) {
-        console.error('Error adding book to library:', error);
-        alert('Error adding book to library. Please try again.'); //alert to style
-    } finally {
-        setIsSubmitting(false);
-    }
-};
-
-    const clearSelection = () => {
-        setSelectedBook(null);
-    };
-
     return (
-        <div className="add-copy-container">
-            <h1>Find Books you want to Lend...</h1>
-            <div className="search-container">
-                {/* Book Search Section */}
-                <div className="search-section">
-                    <label htmlFor="book-search">Search for a book:</label>
-                    <input
-                        id="book-search"
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onKeyUp={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                searchForBooks(searchTerm);
-                            }
-                        }}
-                        placeholder="Enter book title, author, or ISBN"
-                        className="search-input"
-                    />
-                    <button 
-                        type="button" 
-                        onClick={() => searchForBooks(searchTerm)}
-                        disabled={isLoading}
-                        className="search-btn"
-                    >
-                        {isLoading ? 'Searching...' : 'Search'}
-                    </button>
-                </div>
+        <div className="min-h-screen bg-black text-white">
+            <div className="max-w-5xl mx-auto px-6 py-8">
+                <h1 className="text-3xl font-bold mb-6">Offer books to fellow readers...</h1>
 
-                {/* Search Results */}
-                {isLoading && (
-                    <div className="loading">Searching books...</div> //add style
-                )}
-                {searchResults.length > 0 && !selectedBook && (
-                    <div className="search-results">
-                        <h3>Search Results:</h3>
-                        <div className="results-grid">
-                            {searchResults.map((book, index) => {
-                                const externalId = book.key || book.id;
-                                return (
-                                    <div key={`${externalId}-${index}`} className="book-result">
-                                        <div className="book-info">
-                                            <h4>{book.title}</h4>
-                                            <p><strong>Authors:</strong> {book.authors ? book.authors.join(', ') : 'Unknown'}</p>
-                                            <p><strong>Year:</strong> {book.publishedYear || 'Unknown'}</p>
-                                            <p><strong>Source:</strong> {book.source}</p>
-                                            {book.coverUrl && (
-                                                <img src={book.coverUrl} alt={book.title} className="book-cover" />
-                                            )}
-                                        </div>
-                                        <div className="book-actions">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleBookSelect(book)}
-                                                className="view-details-btn"
-                                            >
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-
-                {/* Selected Book and submission form */}
-                {selectedBook && (
-                    <div className="selected-book">
-                        <h3>{selectedBook.title}</h3>
-                        {selectedBook.coverUrl && (
-                            <img src={selectedBook.coverUrl} alt={selectedBook.title} className="book-cover" />
-                        )}
-                        {selectedBook.authors?.length > 0 && (
-                            <p><strong>Authors:</strong> {selectedBook.authors.join(', ')}</p>
-                        )}
-                        {selectedBook.publishedYear && (
-                            <p><strong>Year:</strong> {selectedBook.publishedYear}</p>
-                        )}
-                        <div className="form-row">
-                            <label htmlFor="duration">Max loan days:</label>
+                <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
+                    {/* Book Search Section */}
+                    <div className="mb-4">
+                        <label htmlFor="book-search" className="block text-sm text-gray-300 mb-2">Search for a book</label>
+                        <div className="flex gap-3">
                             <input
-                                id="duration"
-                                type="number"
-                                min={1}
-                                max={30}
-                                value={maxDuration}
-                                onChange={(e) => setMaxDuration(Number(e.target.value))}
+                                id="book-search"
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyUp={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        searchForBooks(searchTerm);
+                                    }
+                                }}
+                                placeholder="Enter book title, author, or ISBN"
+                                className="w-full rounded-md border border-gray-700 bg-black text-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500"
                             />
-                        </div>
-                        <div className="actions">
-                            <button type="button" onClick={clearSelection} className="cancel-btn">Cancel</button>
-                            <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="submit-btn">
-                                {isSubmitting ? 'Adding...' : 'Add to my library'}
+                            <button 
+                                type="button" 
+                                onClick={() => searchForBooks(searchTerm)}
+                                disabled={isLoading}
+                                className="rounded-md bg-purple-600 hover:bg-purple-700 disabled:opacity-50 px-4 py-2 font-medium"
+                            >
+                                {isLoading ? 'Searching...' : 'Search'}
                             </button>
                         </div>
                     </div>
-                )}
+
+                    {/* Search Results */}
+                    {isLoading && (
+                        <div className="mt-4 text-teal-400">Searching books...</div>
+                    )}
+
+                    {searchResults.length > 0 && (
+                        <div className="mt-8">
+                            <h3 className="text-xl font-semibold mb-4">Search Results</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {searchResults.map((book, index) => {
+                                    const externalId = book.key || book.id;
+                                    return (
+                                        <div key={`${externalId}-${index}`} className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden hover:border-teal-500 transition-all duration-300">
+                                            {book.coverUrl && (
+                                                <div className="aspect-[3/4] overflow-hidden">
+                                                    <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                                                </div>
+                                            )}
+                                            <div className="p-4">
+                                                <h4 className="text-lg font-semibold mb-1 line-clamp-2">{book.title}</h4>
+                                                {book.authors && (
+                                                    <p className="text-sm text-gray-300 mb-1">by <span className="text-teal-400">{book.authors.join(', ')}</span></p>
+                                                )}
+                                                <p className="text-sm text-gray-400">Year: <span className="text-purple-400">{book.publishedYear || 'Unknown'}</span></p>
+                                                <p className="text-xs text-gray-500 mt-1">Source: {book.source}</p>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleBookSelect(book)}
+                                                    className="mt-4 w-full rounded-md bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 font-medium"
+                                                >
+                                                    View Details
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

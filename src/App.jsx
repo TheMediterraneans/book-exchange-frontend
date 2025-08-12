@@ -10,6 +10,7 @@ import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import UserBooksPage from './pages/UserBooksPage'
 import ReservationPage from './pages/ReservationPage'
+import EditReservationPage from './pages/EditReservationPage'
 import ProtectedRoute from './components/ProtectedRoutes'
 import AddCopy from "./pages/AddCopy"
 import BookDetailPage from './pages/BookDetailPage'
@@ -81,14 +82,16 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/book-detail" element={<BookDetailPage />} />
         <Route path="/copies" element={<Copies/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
-        {/* Fix: Pass deleteCopy to the main mybooks route */}
         <Route path="/mybooks" element={<ProtectedRoute><UserBooksPage onDelete={deleteCopy} /></ProtectedRoute>} />
         <Route path="/mybooks/:mybookId" element={<ProtectedRoute><UserBooksPage onDelete={deleteCopy} /></ProtectedRoute>} />
-        <Route path="/reserve" element={<ProtectedRoute><ReservationPage/></ProtectedRoute>} />
-        <Route path="/mybooks/add" element={<ProtectedRoute><AddCopy addBookCopy={addBookCopy} /></ProtectedRoute>} />
+        <Route path="/reservation" element={<ProtectedRoute><ReservationPage/></ProtectedRoute>} />
+        <Route path="/edit-reservation" element={<ProtectedRoute><EditReservationPage/></ProtectedRoute>} />
+        <Route path="/mybooks/add" element={<ProtectedRoute><AddCopy /></ProtectedRoute>} />
+        <Route path="/*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </AuthProvider>

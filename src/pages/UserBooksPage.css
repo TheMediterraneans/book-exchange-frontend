@@ -4,10 +4,17 @@
   gap: 20px;
   margin-top: 10px;
 }
+#reservation-card {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+  color: purple
+}
 
 .book-card {
   border: 1px solid #ddd;
   border-radius: 8px;
+  
   padding: 20px;
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -58,6 +65,11 @@
 
 .status-unavailable {
   color: #dc3545;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #ffc107;
   font-weight: bold;
 }
 

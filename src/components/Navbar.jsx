@@ -14,6 +14,17 @@ function Navbar() {
     }
   };
 
+  const handleAddBooksClick = () => {
+    if (user) {
+      navigate("/mybooks/add");
+    } else {
+      const confirmLogin = window.confirm("You need to be logged in to add books. Would you like to go to the login page?");
+      if (confirmLogin) {
+        navigate("/login");
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -35,7 +46,8 @@ function Navbar() {
         {user ? (
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <span>Welcome, {user.name}!</span>
-            <a href="/copies">Find Books</a>
+            <a href="/copies">Borrow books</a>
+            <a href="/mybooks/add">Lend books</a>
             <a href="/mybooks">My Books</a>
             <button 
               onClick={handleLogout}
@@ -53,7 +65,21 @@ function Navbar() {
           </div>
         ) : (
           <div style={{ display: "flex", gap: "1rem" }}>
-            <a href="/copies">Find Books</a>
+            <a href="/copies">Offer books to lend</a>
+            <button 
+              onClick={handleAddBooksClick}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+                fontSize: "inherit",
+                fontFamily: "inherit"
+              }}
+            >
+              Add Books
+            </button>
             <a href="/login">Login</a>
             <a href="/signup">Sign Up</a>
           </div>

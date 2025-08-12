@@ -6,33 +6,27 @@ function ReservationPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { book, availableCopies } = location.state || {};  // get book and copies data passed from BookSearch
+  const { book, selectedCopy } = location.state || {};  // get book and selected copy data
 
-  const [selectedCopyId, setSelectedCopyId] = useState('');
   const [requestedDays, setRequestedDays] = useState(7);
   const [loading, setLoading] = useState(false);
 
   // redirect if no data was passed
   useEffect(() => {
-    if (!book || !availableCopies) {
+    if (!book || !selectedCopy) {
       navigate('/copies');
     }
-  }, [book, availableCopies, navigate]);
+  }, [book, selectedCopy, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!selectedCopyId) {
-      alert('Please select a copy');
-      return;
-    }
 
     setLoading(true);
 
     const authToken = localStorage.getItem('authToken');  // get auth token from localStorage
 
     axios.post('http://localhost:5005/api/reservations', {
-      bookCopyId: selectedCopyId,
+      bookCopyId: selectedCopy._id,
       requestedDays: parseInt(requestedDays)
     }, {
       headers: {
@@ -41,7 +35,7 @@ function ReservationPage() {
     })
       .then(() => {
         alert('Reservation created successfully!');
-        navigate('/mybooks'); // navigate to user's page to see new reservations
+        navigate('/mybooks'); // navigate to user's books page to see reservations
       })
       .catch((err) => {
         if (err.response) {
@@ -60,7 +54,7 @@ function ReservationPage() {
       });
   };
 
-  if (!book || !availableCopies) {
+  if (!book || !selectedCopy) {
     return <div>Loading...</div>;
   }
 
@@ -72,28 +66,16 @@ function ReservationPage() {
         <h2>{book.title}</h2>
         <p><strong>Authors:</strong> {book.authors && book.authors.join(', ')}</p>
         {book.coverUrl && <img src={book.coverUrl} alt={book.title} width="100" />}
+        
+        <div style={{ marginTop: '20px', padding: '15px', border: '1px solid #ccc', borderRadius: '5px' }}>
+          <h3>Copy Details</h3>
+          <p><strong>Owner:</strong> {selectedCopy.owner.name}</p>
+          <p><strong>Owner Email:</strong> {selectedCopy.owner.email}</p>
+          <p><strong>Maximum Duration:</strong> {selectedCopy.maxDuration} days</p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            <strong>Select Copy:</strong>
-            <br />
-            <select
-              value={selectedCopyId}
-              onChange={(e) => setSelectedCopyId(e.target.value)}
-              required
-            >
-              <option value="">Choose a copy...</option>
-              {availableCopies.map((copy) => (
-                <option key={copy._id} value={copy._id}>
-                  Copy #{copy._id.slice(-6)}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
         <div>
           <label>
             <strong>Loan Duration (days):</strong>
@@ -101,13 +83,13 @@ function ReservationPage() {
             <input
               type="number"
               min="1"
-              max="30"
+              max={selectedCopy.maxDuration}
               value={requestedDays}
               onChange={(e) => setRequestedDays(e.target.value)}
               required
             />
           </label>
-          <small>Maximum 30 days</small>
+          <small>Maximum {selectedCopy.maxDuration} days (set by owner)</small>
         </div>
 
         <div>

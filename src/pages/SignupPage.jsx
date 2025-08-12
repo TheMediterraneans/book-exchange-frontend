@@ -11,7 +11,7 @@ function SignupPage() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // clean error hen start typing
+    // clean error then start typing
     if (error) setError("");
   };
 

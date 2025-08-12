@@ -13,63 +13,53 @@ function SearchBooksToBorrow() {
 
         if (!searchTerm.trim()) return;
 
-        // Check authentication status
         const authToken = localStorage.getItem('authToken');
         const isLoggedIn = !!authToken;
-        
-        console.log('Starting search for:', searchTerm, 'Logged in:', isLoggedIn);
+
         setLoading(true);
         setResults([]);
 
-        // Choose endpoint based on authentication status
-        const endpoint = isLoggedIn 
+        // choose search endpoint based on user authentication status
+        const endpoint = isLoggedIn
             ? 'http://localhost:5005/api/search-available-books'  // Full details with owner info
             : 'http://localhost:5005/api/browse-available-books'; // Public version without owner info
-        
-        const headers = isLoggedIn 
-            ? { Authorization: `Bearer ${authToken}` }
-            : {}; // No auth header for public endpoint
 
-        // Search for available books
+        const headers = isLoggedIn
+            ? { Authorization: `Bearer ${authToken}` }
+            : {}; // no auth header for public search endpoint
+
         axios.get(endpoint, {
             params: { q: searchTerm },
             headers: headers
         })
             .then((response) => {
-                console.log('Search response:', response.data);
                 setResults(response.data);
             })
             .catch((error) => {
                 console.error('Search error', error);
-                
+
                 // If the search endpoint doesn't exist, show specific error
                 if (error.response?.status === 404) {
                     console.log('Search endpoint not found (404)');
                     console.log('Error message:', error.response?.data?.message);
-                    
-                    // Check if this is a "route does not exist" error
-                    if (error.response?.data?.message === "This route does not exist") {
-                        const authToken = localStorage.getItem('authToken');
-                        const endpoint = authToken ? 'search-available-books' : 'browse-available-books';
-                        throw new Error(`The '${endpoint}' endpoint is not implemented in your backend yet. Please add the route to your bookCopy.routes.js file.`);
-                    }
+
+                    // // Check if this is a "route does not exist" error
+                    // if (error.response?.data?.message === "This route does not exist") {
+                    //     const authToken = localStorage.getItem('authToken');
+                    //     const endpoint = authToken ? 'search-available-books' : 'browse-available-books';
+                    //     throw new Error(`The '${endpoint}' endpoint is not implemented in your backend yet. Please add the route to your bookCopy.routes.js file.`);
+                    // }
                 } else if (error.response?.status === 401) {
                     alert('Please log in again');
                     navigate('/login');
                     return;
                 }
-                
+
                 throw error;
             })
             .catch((error) => {
                 console.error('Final search error', error);
-                console.error('Error details:', {
-                    code: error.code,
-                    message: error.message,
-                    response: error.response?.status,
-                    responseData: error.response?.data
-                });
-                
+
                 if (error.code === 'ECONNREFUSED' || error.message.includes('ECONNREFUSED')) {
                     alert('Backend server is not running. Please start your backend server on http://localhost:5005 and try again.');
                     setResults([]);
@@ -90,103 +80,194 @@ function SearchBooksToBorrow() {
     };
 
     const beginReserve = (bookData) => {
-        navigate('/reserve', {
+        navigate('/reservation', {
             state: {
-                book: bookData.bookInfo,
-                availableCopies: bookData.copies
+                book: {
+                    externalId: bookData.externalId,
+                    title: bookData.title,
+                    authors: bookData.authors,
+                    coverUrl: bookData.coverUrl,
+                    publishedYear: bookData.publishedYear
+                },
+                selectedCopy: bookData.selectedCopy
+            }
+        });
+    };
+
+    const viewBookDetails = (bookData) => {
+        navigate('/book-detail', {
+            state: { 
+                book: {
+                    key: bookData.externalId,
+                    title: bookData.title,
+                    authors: bookData.authors,
+                    coverUrl: bookData.coverUrl,
+                    publishedYear: bookData.publishedYear,
+                    source: 'database'
+                },
+                fromDatabase: true,
+                availableCopies: bookData.copies || [], // detailed copy info for logged-in users
+                availableCount: bookData.availableCount || 0, // count for non-logged-in users
+                isLoggedIn: !!localStorage.getItem('authToken') // pass login status
             }
         });
     };
 
     return (
         <div>
-            {/* Authentication status banner */}
-            {!localStorage.getItem('authToken') && (
-                <div style={{ 
-                    backgroundColor: '#e7f3ff', 
-                    border: '1px solid #b3d7ff', 
-                    padding: '10px', 
-                    marginBottom: '20px',
-                    borderRadius: '5px'
-                }}>
-                    <p style={{ margin: 0 }}>
-                        <strong>Browsing Mode:</strong> You can search available books, but you'll need to{' '}
-                        <button 
-                            onClick={() => navigate('/login')}
-                            style={{ 
-                                background: 'none', 
-                                border: 'none', 
-                                color: '#007bff', 
-                                textDecoration: 'underline',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            log in
-                        </button> to see owner details and borrow books.
-                    </p>
-                </div>
-            )}
-            
             <form onSubmit={doSearch}>
                 <input
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search for available books to borrow"
                 />
-                <button type="submit" >
+                <button type="submit">
                     Search Available Books
                 </button>
             </form>
 
             {loading && <div>Searching available books...</div>}
 
-            <div style={{ marginTop: '20px' }}>
-                {results.map((bookData) => {
-                    return (
-                        <div key={bookData.externalId} >
-                            <div>
-                                {bookData.coverUrl && (
-                                    <img
-                                        src={bookData.coverUrl}
-                                        alt={bookData.title}
-                                        width="80"
-                                    />
-                                )}
-                                <div>
-                                    <h3>{bookData.title}</h3>
-                                    {bookData.authors && bookData.authors.length > 0 && (
-                                        <p><strong>Authors:</strong> {bookData.authors.join(', ')}</p>
+            <div>
+                {results.flatMap((bookData) => {
+                    // show each copy as a separate entry
+                    if (bookData.copies) {
+                        return bookData.copies.map((copy, index) => (
+                            <div key={copy._id} style={{
+                                border: '2px solid #ddd',
+                                padding: '15px',
+                                margin: '15px 0',
+                                borderRadius: '8px',
+                                backgroundColor: copy.isOwnedByCurrentUser ? '#f0f8ff' : '#fff'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                                    {bookData.coverUrl && (
+                                        <img
+                                            src={bookData.coverUrl}
+                                            alt={bookData.title}
+                                            width="80"
+                                            style={{ borderRadius: '4px' }}
+                                        />
                                     )}
-                                    
-                                    {/* Show different info based on authentication status */}
-                                    {bookData.copies ? (
-                                        // Logged in user - show detailed copy info
-                                        <>
-                                            <p><strong>Available Copies:</strong> {bookData.copies.length}</p>
-                                            {bookData.copies.length > 0 && (
+                                    <div>
+                                        <h3>{bookData.title}</h3>
+                                        {bookData.authors && bookData.authors.length > 0 && (
+                                            <p><strong>Authors:</strong> {bookData.authors.join(', ')}</p>
+                                        )}
+                                        <p><strong>Owner:</strong> {copy.isOwnedByCurrentUser ? 'You' : copy.owner.name}</p>
+                                        <p><strong>Max Duration:</strong> {copy.maxDuration} days</p>
+
+                                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px', alignItems: 'center' }}>
+                                            <button
+                                                onClick={() => viewBookDetails(bookData)}
+                                                style={{
+                                                    backgroundColor: '#6c757d',
+                                                    color: 'white',
+                                                    padding: '8px 16px',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px'
+                                                }}
+                                            >
+                                                View Details
+                                            </button>
+
+                                            {copy.isOwnedByCurrentUser ? (
+                                                <span style={{
+                                                    color: '#666',
+                                                    fontStyle: 'italic',
+                                                    padding: '8px',
+                                                    backgroundColor: '#e9ecef',
+                                                    borderRadius: '4px'
+                                                }}>
+                                                    This is your copy
+                                                </span>
+                                            ) : (
                                                 <button
-                                                    onClick={() => beginReserve(bookData)}
+                                                    onClick={() => beginReserve({
+                                                        ...bookData,
+                                                        selectedCopy: copy
+                                                    })}
+                                                    style={{
+                                                        backgroundColor: '#28a745',
+                                                        color: 'white',
+                                                        padding: '8px 16px',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '14px'
+                                                    }}
                                                 >
-                                                    Reserve This Book
+                                                    Borrow from {copy.owner.name}
                                                 </button>
                                             )}
-                                        </>
-                                    ) : (
-                                        // Non-logged-in user - show count and login prompt
-                                        <>
-                                            <p><strong>Available Copies:</strong> {bookData.availableCount}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ));
+                    } else {
+                        // Non-logged-in user - show grouped book entry
+                        return (
+                            <div key={bookData.externalId} style={{
+                                border: '2px solid #ddd',
+                                padding: '15px',
+                                margin: '15px 0',
+                                borderRadius: '8px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                                    {bookData.coverUrl && (
+                                        <img
+                                            src={bookData.coverUrl}
+                                            alt={bookData.title}
+                                            width="80"
+                                            style={{ borderRadius: '4px' }}
+                                        />
+                                    )}
+                                    <div>
+                                        <h3>{bookData.title}</h3>
+                                        {bookData.authors && bookData.authors.length > 0 && (
+                                            <p><strong>Authors:</strong> {bookData.authors.join(', ')}</p>
+                                        )}
+                                        <p><strong>Available Copies:</strong> {bookData.availableCount}</p>
+                                        
+                                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                            <button
+                                                onClick={() => viewBookDetails(bookData)}
+                                                style={{
+                                                    backgroundColor: '#6c757d',
+                                                    color: 'white',
+                                                    padding: '8px 16px',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px'
+                                                }}
+                                            >
+                                                View Details
+                                            </button>
+                                            
                                             <button
                                                 onClick={() => navigate('/login')}
-                                                style={{ backgroundColor: '#007bff', color: 'white' }}
+                                                style={{
+                                                    backgroundColor: '#007bff',
+                                                    color: 'white',
+                                                    padding: '8px 16px',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px'
+                                                }}
                                             >
                                                 Login to Borrow This Book
                                             </button>
-                                        </>
-                                    )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
+                        );
+                    }
                 })}
             </div>
 

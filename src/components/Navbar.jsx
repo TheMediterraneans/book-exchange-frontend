@@ -33,7 +33,7 @@ function Navbar() {
       {/* Titolo */}
       <div>
         <section className="main-title">
-        <h1 className="text-2xl font-extrabold tracking-wide cursor-pointer select-none" onClick={() => navigate("/")}>
+        <h1 className="cursor-pointer select-none text-4xl font-playfair tracking-wide" onClick={() => navigate("/")}>
           My Books App
         </h1>
         </section>

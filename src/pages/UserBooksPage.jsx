@@ -7,24 +7,20 @@ import "./UserBooksPage.css";
 function UserBooksPage(props) {
   const { user, logout } = useAuth();
   const [myBooks, setMyBooks] = useState([]);
-  const [reservations, setReservations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [reservationsLoading, setReservationsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [reservationsError, setReservationsError] = useState(null);
 
   const {onDelete} = props;
 
   // Fetch user's books when component mounts
   useEffect(() => {
     fetchMyBooks();
-    fetchReservations();
   }, []);
 
   const fetchMyBooks = async () => {
     try {
       const storedToken = localStorage.getItem("authToken");
-
+      
       if (!storedToken) {
         throw new Error("No authentication token found");
       }
@@ -49,46 +45,24 @@ function UserBooksPage(props) {
     }
   };
 
-  const fetchReservations = async () => {
-    try {
-      const storedToken = localStorage.getItem("authToken");
-
-      if (!storedToken) {
-        throw new Error("No authentication token found");
-      }
-
-      const response = await fetch("http://localhost:5005/api/reservations", {
-        headers: {
-          "Authorization": `Bearer ${storedToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch reservations");
-      }
-
-      const userReservations = await response.json();
-      setReservations(userReservations);
-    } catch (error) {
-      console.error("Error fetching reservations:", error);
-      setReservationsError(error.message);
-    } finally {
-      setReservationsLoading(false);
-    }
-  };
-
   const handleLogout = () => {
     logout(); // automatically redirect due to ProtectedRoute
   };
 
   if (isLoading) {
-    console.log("UserBooksPage: Loading books...");
-    return <div>Loading your books...</div>;
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-xl text-teal-400">Loading your books...</div>
+      </div>
+    );
   }
 
   if (error) {
-    console.log("UserBooksPage: Error loading books:", error);
-    return <div>Error: {error}</div>;
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-red-400 text-xl">Error: {error}</div>
+      </div>
+    );
   }
 
    const handleDelete = async (bookId) => {
@@ -98,148 +72,114 @@ function UserBooksPage(props) {
     } catch (error) {
       setError(error.message || "Failed to delete book from the library")
     }
-
-
- 
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Welcome to your books!</h1>
-
-      {/* Your books content here */}
-      <div>
-        <h2>Your Books ({myBooks.length})</h2>
-
-        <Link to="/mybooks/add">
-          <button style={{
-            backgroundColor: "purple",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginBottom: "20px"
-          }}>
-            Add a new book to your library
+    <div className="min-h-screen bg-black text-white">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header Section */}
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold text-white mb-6">Welcome to your Library</h1>
+          
+          <button 
+            onClick={handleLogout}
+            className="bg-red-700 hover:bg-red-800 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 mb-8"
+          >
+            Logout
           </button>
-        </Link>
+        </div>
+        
+        {/* Books Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-semibold text-white">
+              Your Books <span className="text-teal-400">({myBooks.length})</span>
+            </h2>
+            
+            <Link to="/mybooks/add">
+              <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                + Add New Book
+              </button>
+            </Link>
+          </div>
 
-        {myBooks.length === 0 ? (
-          <p>You don't have any books in your library yet. Add your first book!</p>
-        ) : (
-                     <div className="books-grid">
-             {myBooks.map((book) => (
-               <div key={book._id} className="book-card">
-                 {book.coverUrl && (
-                   <img 
-                     src={book.coverUrl} 
-                     alt={book.title}
-                     className="book-cover"
-                   />
-                 )}
-                 <span><h3>{book.title}</h3></span>
-                 <div className="book-info">
-                  
-                  
-                    {book.authors && book.authors.length > 0 && (
-                     <p className="book-authors">by {book.authors.join(', ')}</p>
-                   )}
-                    {book.publishedYear && (
-                     <p className="book-year">Published: {book.publishedYear}</p>
-                   )}
-                   <p className="book-status">
-                     <strong>Status:</strong> 
-                     <span className={book.isAvailable ? "status-available" : "status-unavailable"}>
-                       {book.isAvailable ? " Available" : " Not Available"}
-                     </span>
-                   </p>
-
-                  {/* Removed Max Duration display as requested */}
-                  {!book.isAvailable && book.reservation && (
-                    <div className="reservation-info">
-                      <p className="reservation-start">
-                        <strong>Reserved from:</strong> {" "}
-                        {new Date(book.reservation.startDate).toLocaleDateString()}
-                      </p>
-                      {book.reservation.endDate && (
-                        <p className="reservation-end">
-                          <strong>Until:</strong> {" "}
-                          {new Date(book.reservation.endDate).toLocaleDateString()}
-                        </p>
-                      )}
+          {myBooks.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📚</div>
+              <p className="text-xl text-gray-300 mb-4">Your library is empty</p>
+              <p className="text-gray-500">Start building your collection by adding your first book!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {myBooks.map((book) => (
+                <div key={book._id} className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden hover:border-teal-500 transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/20">
+                  {/* Book Cover */}
+                  {book.coverUrl && (
+                    <div className="aspect-[3/4] overflow-hidden">
+                      <img 
+                        src={book.coverUrl} 
+                        alt={book.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
                   )}
-                 </div>
-                 <button onClick={() => handleDelete(book._id)} 
-                 style={{
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginTop: "10px"
-                  }}>
-                   Delete book from your library
-                 </button>
-               </div>
-             ))}
-           </div>
-        )}
-      </div>
+                  
+                  {/* Book Info */}
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2">{book.title}</h3>
+                    
+                    {book.authors && book.authors.length > 0 && (
+                      <p className="text-sm text-gray-300 mb-2">
+                        by <span className="text-teal-400">{book.authors.join(', ')}</span>
+                      </p>
+                    )}
+                    
+                    {book.publishedYear && (
+                      <p className="text-sm text-gray-400 mb-3">
+                        Published: <span className="text-purple-400">{book.publishedYear}</span>
+                      </p>
+                    )}
+                    
+                    {/* Status Badge */}
+                    <div className="mb-4">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        book.isAvailable 
+                          ? 'bg-green-900 text-green-300 border border-green-700' 
+                          : 'bg-red-900 text-red-300 border border-red-700'
+                      }`}>
+                        {book.isAvailable ? '✓ Available' : '✗ Not Available'}
+                      </span>
+                    </div>
 
-      <section>
-        <h2>Your Reservations</h2>
-
-        {reservationsLoading && <p>Loading reservations...</p>}
-
-        {reservationsError && (
-          <div style={{ color: 'red', padding: '10px', backgroundColor: '#fee' }}>
-            {reservationsError}
-          </div>
-        )}
-
-        {!reservationsLoading && !reservationsError && reservations.length === 0 && (
-          <p>You haven't made any reservations yet.</p>
-        )}
-
-        {!reservationsLoading && !reservationsError && reservations.length > 0 && (
-          <div>
-            {reservations.map((reservation) => (
-              <div key={reservation._id} style={{ 
-                border: '1px solid #ddd', 
-                padding: '15px', 
-                margin: '10px 0',
-                borderRadius: '5px' 
-              }}>
-                <h3>Book Copy ID: {reservation.book?._id?.slice(-6) || 'Unknown'}</h3>
-                <p><strong>Start Date:</strong> {new Date(reservation.startDate).toLocaleDateString()}</p>
-                <p><strong>End Date:</strong> {new Date(reservation.endDate).toLocaleDateString()}</p>
-                <p><strong>Status:</strong> {
-                  new Date() > new Date(reservation.endDate) ?
-                    'Overdue' :
-                    new Date() < new Date(reservation.startDate) ?
-                      'Upcoming' :
-                      'Active'
-                }</p>
-
-                {/* Display book copy details if available */}
-                {reservation.book && (
-                  <div>
-                    <p><strong>Copy Details:</strong></p>
-                    <p>ID: {reservation.book._id}</p>
-                    {reservation.book.title && <p>Title: {reservation.book.title}</p>}
-                    {reservation.book.externalId && <p>External ID: {reservation.book.externalId}</p>}
-                    {reservation.book.condition && <p>Condition: {reservation.book.condition}</p>}
-                    {reservation.book.location && <p>Location: {reservation.book.location}</p>}
+                    {/* Reservation Info */}
+                    {!book.isAvailable && book.reservation && (
+                      <div className="mb-4 p-3 bg-gray-800 rounded-lg border border-gray-700">
+                        <p className="text-xs text-gray-300 mb-1">
+                          <span className="text-purple-400">Reserved from:</span> {new Date(book.reservation.startDate).toLocaleDateString()}
+                        </p>
+                        {book.reservation.endDate && (
+                          <p className="text-xs text-gray-300">
+                            <span className="text-purple-400">Until:</span> {new Date(book.reservation.endDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Delete Button */}
+                    <button 
+                      onClick={() => handleDelete(book._id)} 
+                      className="w-full bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 mt-4"
+                    >
+                      Delete Book
+                    </button>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div><h1>Your reservations</h1></div>
     </div>
   );
 }

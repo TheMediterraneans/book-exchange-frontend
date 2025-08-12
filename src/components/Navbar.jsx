@@ -7,7 +7,6 @@ function Navbar() {
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
-    
     if (confirmLogout) {
       logout();
       navigate("/login");
@@ -26,63 +25,78 @@ function Navbar() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-white p-4">Loading...</div>;
   }
 
   return (
-    <nav style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "1rem",
-      backgroundColor: "#a5c03bff",
-      borderBottom: "1px solid #dee2e6"
-    }}>
+    <nav className="bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center">
+      {/* Titolo */}
       <div>
-        <h2 style={{color: "black"}}>My Books App</h2>
+        <section className="main-title">
+        <h1 className="text-2xl font-extrabold tracking-wide cursor-pointer select-none" onClick={() => navigate("/")}>
+          My Books App
+        </h1>
+        </section>
       </div>
-      
-      <div>
+
+      {/* Menu */}
+      <div className="flex items-center space-x-6 text-sm md:text-base">
         {user ? (
-          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-            <span>Welcome, {user.name}!</span>
-            <a href="/copies">Borrow books</a>
-            <a href="/mybooks/add">Lend books</a>
-            <a href="/mybooks">My Books</a>
-            <button 
+          <>
+            <span className="hidden sm:inline-block">Welcome, <span className="font-semibold">{user.name}</span>!</span>
+            <button
+              onClick={() => navigate("/copies")}
+              className="hover:text-purple-300 transition"
+            >
+              Borrow Books
+            </button>
+            <button
+              onClick={() => navigate("/mybooks/add")}
+              className="hover:text-purple-300 transition"
+            >
+              Lend Books
+            </button>
+            <button
+              onClick={() => navigate("/mybooks")}
+              className="hover:text-purple-300 transition"
+            >
+              My Books
+            </button>
+            <button
               onClick={handleLogout}
-              style={{
-                backgroundColor: "#dc3545",
-                color: "white",
-                border: "none",
-                padding: "8px 16px",
-                borderRadius: "4px",
-                cursor: "pointer"
-              }}
+              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition"
             >
               Logout
             </button>
-          </div>
+          </>
         ) : (
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <a href="/copies">Offer books to lend</a>
-            <button 
-              onClick={handleAddBooksClick}
-              style={{
-                background: "none",
-                border: "none",
-                color: "inherit",
-                textDecoration: "underline",
-                cursor: "pointer",
-                fontSize: "inherit",
-                fontFamily: "inherit"
-              }}
+          <>
+            <button
+              onClick={() => navigate("/copies")}
+              className="hover:text-purple-300 transition"
             >
-              Add Books
+              <span className="nav-button">Offer Books to Lend</span>
+              
             </button>
-            <a href="/login">Login</a>
-            <a href="/signup">Sign Up</a>
-          </div>
+            <button
+              onClick={handleAddBooksClick}
+              className="underline hover:text-purple-300 transition"
+            >
+             <span className="nav-button"> Add Books</span>
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="hover:text-purple-300 transition"
+            >
+              <span className="nav-button"> Login</span>
+            </button>
+            <button
+              onClick={() => navigate("/signup")}
+              className="hover:text-purple-300 transition"
+            >
+              <span className="nav-button">Sign Up</span>
+            </button>
+          </>
         )}
       </div>
     </nav>

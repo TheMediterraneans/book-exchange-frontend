@@ -47,12 +47,14 @@ function LoginPage() {
 
   return (
     <section>
+      <div className="container-form">
       <h1>Login</h1>
 
       <form onSubmit={handleSubmit}>
         <article>
           <input
-            className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
+            className="input-form"
+            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
             name="email"
             type="email"
             placeholder="User E-mail"
@@ -63,8 +65,9 @@ function LoginPage() {
           />
         </article>
         <article>
-          <input
-            className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
+          <input 
+            className="input-form"
+            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
             name="password"
             type="password"
             placeholder="Enter your Password"
@@ -75,16 +78,17 @@ function LoginPage() {
           />
         </article>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="submit-button">
           {loading ? "Logging in..." : "Login"}
         </button>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
 
-      <p>
-        Don't have an account? <a href="/signup">Sign up here</a>
+      <p className="already-account">
+        Don't have an account? <a href="/signup" className="access-here">Sign up here</a>
       </p>
+      </div>
     </section>
   );
 }

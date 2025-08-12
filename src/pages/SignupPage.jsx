@@ -46,12 +46,15 @@ function SignupPage() {
 
   return (
     <>
-      <h1>Sign up!</h1>
+    <div className="form-container">
+
+      <h1 className="page-title">Sign up!</h1>
       <section>
         <form onSubmit={handleSubmit}>
           <article>
             <input 
-            className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
+            className="input-form"
+            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
             name="name"
             type="text"
             placeholder="Enter your name"
@@ -64,7 +67,8 @@ function SignupPage() {
           
           <article>
             <input 
-            className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
+            className="input-form"
+            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
             name="email"
             type="email"
             placeholder="E-mail"
@@ -77,7 +81,8 @@ function SignupPage() {
           
           <article>
             <input 
-            className="rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
+            className="input-form"
+            //className="rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
             name="password"
             type="password"
             placeholder="Password (min 6 characters, at least 1 capital letter, and a number)"
@@ -88,17 +93,19 @@ function SignupPage() {
           />
           </article>
           
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className="submit-button">
             {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
         
+        
         {error && <p style={{color: "red"}}>{error}</p>}
         
-        <p>
-          You already have an account? <a href="/login">Accedi qui</a>
+        <p className="already-account">
+          You already have an account? <a href="/login"className="access-here">Accedi qui</a>
         </p>
       </section>
+      </div>
     </>
   );
 }

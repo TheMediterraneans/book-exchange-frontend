@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function Footer() {
     return (
         <footer className="footer py-2 px-4 text-base-content border-t border-base-300 fixed bottom-0 left-0 right-0 z-50 shadow-lg backdrop-blur-sm bg-base-100/95 text-sm">
@@ -21,7 +23,9 @@ function Footer() {
                 <div className="pr-4 text-right ml-auto">
                     <p>Contacts:</p>
                     <p>ruscittiluana@gmail.com & zefkav@yahoo.gr</p>
+                    <Link to="/about">
                     <p>About</p>
+                    </Link>
                 </div>
             </div>
         </footer>

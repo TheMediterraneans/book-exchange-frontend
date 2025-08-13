@@ -5,6 +5,7 @@
 @import "tailwindcss";
 
 
+
 :root {
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -14,6 +15,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
 
 @font-face {
   font-family: 'Sreda';
@@ -45,11 +48,14 @@
 }
 body {
   background-color: rgb(49, 17, 72);
-  font-family: var(--font-sans);
+  
 }
 .nav-buttons {
   background-color: green
   
+}
+.font-lato {
+  font-family: 'Lato', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 footer {
   position: fixed;

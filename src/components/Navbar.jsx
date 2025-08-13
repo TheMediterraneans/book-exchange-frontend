@@ -30,7 +30,8 @@ function Navbar() {
 
   return (
     
-  <nav className="font-['Sreda'] bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center">
+  <nav className="font-['Sreda'] bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center"> {/*font-['Lato','Helvetica_Neue',Helvetica,Arial,sans-serif] text-3xl , font-['Sreda']*/}
+  
     <div>
       <section className="main-title">
         <h1 className="cursor-pointer select-none text-4xl font-bold tracking-wide" onClick={() => navigate("/")}>

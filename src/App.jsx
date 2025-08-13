@@ -14,6 +14,7 @@ import EditReservationPage from './pages/EditReservationPage'
 import ProtectedRoute from './components/ProtectedRoutes'
 import AddCopy from "./pages/AddCopy"
 import BookDetailPage from './pages/BookDetailPage'
+import AboutPage from "./pages/AboutPage"
 
 function App() {
   
@@ -92,6 +93,7 @@ function App() {
         <Route path="/edit-reservation" element={<ProtectedRoute><EditReservationPage/></ProtectedRoute>} />
         <Route path="/mybooks/add" element={<ProtectedRoute><AddCopy /></ProtectedRoute>} />
         <Route path="/*" element={<PageNotFound />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
       <Footer />
     </AuthProvider>

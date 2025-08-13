@@ -30,16 +30,14 @@ function Navbar() {
 
   return (
     <nav className="bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center">
-      {/* Titolo */}
       <div>
         <section className="main-title">
-        <h1 className="cursor-pointer select-none text-4xl font-playfair tracking-wide" onClick={() => navigate("/")}>
-          My Books App
-        </h1>
+          <h1 className="cursor-pointer select-none text-4xl font-playfair tracking-wide" onClick={() => navigate("/")}>
+            BookBros-just lend it! (this is a test name for fun :P)
+          </h1>
         </section>
       </div>
 
-      {/* Menu */}
       <div className="flex items-center space-x-6 text-sm md:text-base">
         {user ? (
           <>
@@ -76,13 +74,13 @@ function Navbar() {
               className="hover:text-purple-300 transition"
             >
               <span className="nav-button">Offer Books to Lend</span>
-              
+
             </button>
             <button
               onClick={handleAddBooksClick}
               className="underline hover:text-purple-300 transition"
             >
-             <span className="nav-button"> Add Books</span>
+              <span className="nav-button"> Add Books</span>
             </button>
             <button
               onClick={() => navigate("/login")}

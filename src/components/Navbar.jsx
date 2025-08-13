@@ -29,76 +29,77 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center">
-      <div>
-        <section className="main-title">
-          <h1 className="cursor-pointer select-none text-4xl font-playfair tracking-wide" onClick={() => navigate("/")}>
-            BookBros-just lend it! (this is a test name for fun :P)
-          </h1>
-        </section>
-      </div>
+    
+  <nav className="font-['Sreda'] bg-grey-900 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center">
+    <div>
+      <section className="main-title">
+        <h1 className="cursor-pointer select-none text-4xl font-bold tracking-wide" onClick={() => navigate("/")}>
+          Books.Inc
+        </h1>
+      </section>
+    </div>
 
-      <div className="flex items-center space-x-6 text-sm md:text-base">
-        {user ? (
-          <>
-            <span className="hidden sm:inline-block">Welcome, <span className="font-semibold">{user.name}</span>!</span>
-            <button
-              onClick={() => navigate("/copies")}
-              className="hover:text-purple-300 transition"
-            >
-              Borrow Books
-            </button>
-            <button
-              onClick={() => navigate("/mybooks/add")}
-              className="hover:text-purple-300 transition"
-            >
-              Lend Books
-            </button>
-            <button
-              onClick={() => navigate("/mybooks")}
-              className="hover:text-purple-300 transition"
-            >
-              My Books
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => navigate("/copies")}
-              className="hover:text-purple-300 transition"
-            >
-              <span className="nav-button">Offer Books to Lend</span>
-
-            </button>
-            <button
-              onClick={handleAddBooksClick}
-              className="underline hover:text-purple-300 transition"
-            >
-              <span className="nav-button"> Add Books</span>
-            </button>
-            <button
-              onClick={() => navigate("/login")}
-              className="hover:text-purple-300 transition"
-            >
-              <span className="nav-button"> Login</span>
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="hover:text-purple-300 transition"
-            >
-              <span className="nav-button">Sign Up</span>
-            </button>
-          </>
-        )}
-      </div>
-    </nav>
-  );
+    <div className="flex items-center space-x-6 text-sm md:text-base">
+      {/* Rest of your existing JSX - no changes needed */}
+      {user ? (
+        <>
+          <span className="hidden sm:inline-block">Welcome, <span className="font-bold">{user.name}</span>!</span>
+          <button
+            onClick={() => navigate("/copies")}
+            className="hover:text-purple-300 transition"
+          >
+            Borrow Books
+          </button>
+          <button
+            onClick={() => navigate("/mybooks/add")}
+            className="hover:text-purple-300 transition"
+          >
+            Lend Books
+          </button>
+          <button
+            onClick={() => navigate("/mybooks")}
+            className="hover:text-purple-300 transition"
+          >
+            My Books
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => navigate("/copies")}
+            className="hover:text-purple-300 transition"
+          >
+            <span className="nav-button">Offer Books to Lend</span>
+          </button>
+          <button
+            onClick={handleAddBooksClick}
+            className="underline hover:text-purple-300 transition"
+          >
+            <span className="nav-button"> Add Books</span>
+          </button>
+          <button
+            onClick={() => navigate("/login")}
+            className="hover:text-purple-300 transition"
+          >
+            <span className="nav-button"> Login</span>
+          </button>
+          <button
+            onClick={() => navigate("/signup")}
+            className="hover:text-purple-300 transition"
+          >
+            <span className="nav-button">Sign Up</span>
+          </button>
+        </>
+      )}
+    </div>
+  </nav>
+);
 }
 
 export default Navbar;

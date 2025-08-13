@@ -1,25 +1,64 @@
-@tailwind base;
+/*@tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities;*/
+
+@import "tailwindcss";
+
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: 'Sreda';
+  src: url('./assets/fonts/Sreda.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sreda';
+  src: url('./assets/fonts/Sreda-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sreda';
+  src: url('./assets/fonts/Sreda-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-sreda: 'Sreda', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Sreda', ui-sans-serif, system-ui, sans-serif;
+}
 body {
   background-color: rgb(49, 17, 72);
+  font-family: var(--font-sans);
 }
 .nav-buttons {
-  background-color: green,
+  background-color: green
   
+}
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #dfb5fd19;
+  color: white;
+  text-align: center;
 }
 /* 
 a {

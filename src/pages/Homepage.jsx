@@ -44,7 +44,7 @@ function Homepage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
+        <div className="font-['Sreda'] min-h-screen bg-gray-900 text-white">
             {/* Hero Section */}
             <div className="text-center py-12">
                 <h1 className="text-5xl font-bold mb-6">Welcome to My Books App</h1>

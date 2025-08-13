@@ -58,7 +58,7 @@ function UserBooksPage(props) {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://localhost:5005/api/reservations", {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/reservations`, {
         headers: {
           "Authorization": `Bearer ${storedToken}`,
         },
@@ -100,7 +100,7 @@ function UserBooksPage(props) {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`http://localhost:5005/api/reservations/${reservationId}`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/reservations/${reservationId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${storedToken}`,

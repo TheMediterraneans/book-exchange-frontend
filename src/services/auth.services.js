@@ -1,9 +1,9 @@
 import axios from "axios";
-
-const API_URL = "http://localhost:5005"; // Change to your backend URL
+const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+//const API_URL = import.meta.env.VITE_SERVER_URL; // Change to your backend URL
 
 const api = axios.create({
-  baseURL: API_URL
+  baseURL: VITE_SERVER_URL
 });
 
 // ADD THIS INTERCEPTOR - automatically adds token to requests

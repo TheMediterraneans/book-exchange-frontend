@@ -17,6 +17,10 @@
 body {
   background-color: rgb(49, 17, 72);
 }
+.nav-buttons {
+  background-color: green,
+  
+}
 /* 
 a {
   font-weight: 500;

@@ -13,7 +13,7 @@ function SearchBookToLend() {
 
     setCopiesForBook({}); // clear previous results
 
-    axios.get('http://localhost:5005/api/search-books', { params: { q: searchTerm } })
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/api/search-books`, { params: { q: searchTerm } })
       .then((response) => {
         setResults(response.data);
 
@@ -24,7 +24,7 @@ function SearchBookToLend() {
 
           if (!externalId)
             return;
-          axios.get('http://localhost:5005/api/mybooks', { params: { externalId: externalId } })
+          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/mybooks`, { params: { externalId: externalId } })
             .then((copyResponse) => {
               setCopiesForBook((prev) => {
                 const newMap = { ...prev };

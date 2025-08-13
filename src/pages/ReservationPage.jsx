@@ -10,6 +10,7 @@ function ReservationPage() {
 
   const [requestedDays, setRequestedDays] = useState(7);
   const [loading, setLoading] = useState(false);
+  //const [isAvailable, setIsAvailable] = useState(true)
 
   // redirect if no data was passed
   useEffect(() => {
@@ -25,7 +26,7 @@ function ReservationPage() {
 
     const authToken = localStorage.getItem('authToken');  // get auth token from localStorage
 
-    axios.post('http://localhost:5005/api/reservations', {
+    axios.post(`${import.meta.env.VITE_SERVER_URL}/api/reservations`, {
       bookCopyId: selectedCopy._id,
       requestedDays: parseInt(requestedDays)
     }, {
@@ -51,6 +52,7 @@ function ReservationPage() {
       })
       .finally(() => {
         setLoading(false);
+        //setIsAvailable(false)
       });
   };
 

@@ -28,7 +28,7 @@ function App() {
         throw new Error("No authentication token found. Please log in again.");
       }
       
-      const response = await fetch(`http://localhost:5005/api/mybooks/add`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

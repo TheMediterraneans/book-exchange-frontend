@@ -35,7 +35,7 @@ function EditReservationPage() {
         const newEndDate = new Date(reservation.startDate);
         newEndDate.setDate(newEndDate.getDate() + parseInt(requestedDays));
 
-        axios.put(`http://localhost:5005/api/reservations/${reservation._id}`, {
+        axios.put(`${import.meta.env.VITE_SERVER_URL}/api/reservations/${reservation._id}`, {
             requestedDays: parseInt(requestedDays),
             endDate: newEndDate.toISOString()
         }, {

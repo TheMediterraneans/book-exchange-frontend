@@ -21,8 +21,8 @@ function SearchBooksToBorrow() {
 
         // choose search endpoint based on user authentication status
         const endpoint = isLoggedIn
-            ? 'http://localhost:5005/api/search-available-books'  // Full details with owner info
-            : 'http://localhost:5005/api/browse-available-books'; // Public version without owner info
+            ?` ${import.meta.env.VITE_SERVER_URL}/api/search-available-books`  // Full details with owner info
+            : `${import.meta.env.VITE_SERVER_URL}/api/browse-available-books`; // Public version without owner info
 
         const headers = isLoggedIn
             ? { Authorization: `Bearer ${authToken}` }
@@ -61,7 +61,7 @@ function SearchBooksToBorrow() {
                 console.error('Final search error', error);
 
                 if (error.code === 'ECONNREFUSED' || error.message.includes('ECONNREFUSED')) {
-                    alert('Backend server is not running. Please start your backend server on http://localhost:5005 and try again.');
+                    alert(`Backend server is not running. Please start your backend server on ${import.meta.env.VITE_SERVER_URL} and try again.`);
                     setResults([]);
                 } else if (error.message.includes('API routes not implemented')) {
                     alert('Backend server is running but API routes are not set up yet. Please implement the book search endpoints in your backend.');

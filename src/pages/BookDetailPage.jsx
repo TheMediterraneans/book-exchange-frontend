@@ -54,7 +54,7 @@ function BookDetailPage() {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/api/books`,
+        `${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`,
         {
           method: "POST",
           headers: {

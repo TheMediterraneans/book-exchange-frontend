@@ -115,18 +115,72 @@ function SearchBooksToBorrow() {
 
     return (
         <div>
-            <form onSubmit={doSearch}>
-                <input
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search for available books to borrow"
-                />
-                <button type="submit">
-                    Search Available Books
-                </button>
-            </form>
+            {/* Styled Search Container */}
+            <div style={{
+                backgroundColor: 'rgb(17, 24, 39)', // bg-gray-900
+                borderRadius: '0.75rem', // rounded-xl
+                border: '1px solid rgb(31, 41, 55)', // border-gray-800
+                padding: '1.5rem', // p-6
+                maxWidth: '56rem', // max-w-4xl
+                margin: '1.5rem auto 0', // mt-6 mx-auto
+            }}>
+                {/* Book Search Section */}
+                <div style={{ marginBottom: '1rem' }}> {/* mb-4 */}
+                    <label 
+                        htmlFor="book-search" 
+                        style={{
+                            display: 'block',
+                            fontSize: '0.875rem', // text-sm
+                            color: 'rgb(209, 213, 219)', // text-gray-300
+                            marginBottom: '0.5rem' // mb-2
+                        }}
+                    >
+                        Search for a book
+                    </label>
+                    <form onSubmit={doSearch} style={{ display: 'flex', gap: '0.75rem' }}> {/* gap-3 */}
+                        <input
+                            id="book-search"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Enter book title, author, or ISBN"
+                            style={{
+                                flex: '1',
+                                padding: '0.75rem 1rem',
+                                backgroundColor: 'rgb(0, 0, 0)', // black background like first image
+                                border: '1px solid rgb(75, 85, 99)',
+                                borderRadius: '0.5rem',
+                                color: 'rgb(156, 163, 175)', // gray placeholder text
+                                fontSize: '1rem',
+                                outline: 'none'
+                            }}
+                        />
+                        <button 
+                            type="submit"
+                            style={{
+                                backgroundColor: 'rgb(168, 85, 247)', // purple like first image
+                                color: 'white',
+                                padding: '0.75rem 1.25rem',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                cursor: 'pointer',
+                                fontSize: '1rem',
+                                fontWeight: '600',
+                                minWidth: 'auto'
+                            }}
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-            {loading && <div>Searching available books...</div>}
+            {loading && <div style={{ 
+                textAlign: 'center', 
+                padding: '2rem',
+                color: 'rgb(209, 213, 219)' 
+            }}>
+                Searching available books...
+            </div>}
 
             <div>
                 {results.flatMap((bookData) => {
@@ -272,7 +326,13 @@ function SearchBooksToBorrow() {
             </div>
 
             {!loading && results.length === 0 && searchTerm && (
-                <p>No available books found. Try a different search term.</p>
+                <p style={{ 
+                    textAlign: 'center', 
+                    color: 'rgb(209, 213, 219)',
+                    padding: '2rem' 
+                }}>
+                    No available books found. Try a different search term.
+                </p>
             )}
         </div>
     );

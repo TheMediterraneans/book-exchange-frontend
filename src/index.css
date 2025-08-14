@@ -47,7 +47,8 @@
   --font-sans: 'Sreda', ui-sans-serif, system-ui, sans-serif;
 }
 body {
-  background-color: rgb(49, 17, 72);
+  background-color: rgb(27, 9, 40);
+  padding-bottom: 30px;
   
 }
 .nav-buttons {
@@ -66,6 +67,12 @@ footer {
   color: white;
   text-align: center;
 }
+.get-started-button {
+  background: #ec6f4e;
+  border: #ec6f4e;
+  color: white;
+}
+
 /* 
 a {
   font-weight: 500;

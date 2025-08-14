@@ -47,7 +47,7 @@ function Homepage() {
         <div className="font-['Sreda'] min-h-screen bg-gray-900 text-white">
             {/* Hero Section */}
             <div className="text-center py-12">
-                <h1 className="text-5xl font-bold mb-6">Welcome to My Books App</h1>
+                <h1 className="text-5xl font-bold mb-6">Welcome to Books.Inc</h1>
                 <p className="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
                     Find your next book, borrow from others, share your library, and manage your reservations easily!
                 </p>
@@ -57,7 +57,7 @@ function Homepage() {
                         
                         <Link to="/login"> 
                         <span className='get-started-button'>
-                            <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold">
+                            <button className="bg-orange-600 hover:bg-orange-400 px-6 py-3 rounded-lg font-semibold">
                                 Get Started
                             </button>
                             </span>

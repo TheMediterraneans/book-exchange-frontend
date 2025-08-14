@@ -4,7 +4,9 @@ function AboutPage() {
       <h1><b>About us</b></h1>
       <p>
         We are Zefi & Luana, and this is our second project for the bootcamp
-        Full-stack Web Development Ironhack. Zefi is a Greek digital archivist
+        Full-stack Web Development Ironhack. 
+        
+        Zefi is a Greek digital archivist
         living in Amsterdam since many years (we won't count how many :P)
         learning coding to enhance her skills to be able to improve the way
         digital archives preservation is handled today.
@@ -13,7 +15,9 @@ function AboutPage() {
         living in Paris since few years (idem, we won't count the time) working
         in tech as Project Manager and pivoting on a Product Management role,
         she decided to learn coding to better understand the work of the teams
-        she collaborates with. This project is all around books and the love for
+        she collaborates with. 
+        
+        This project is all around books and the love for
         readings that many people share as a passion. The idea was to offer a
         platform to share this passion allowing other people borrowing and
         appreciating the readings of our heart. The hope is to fuel the creation

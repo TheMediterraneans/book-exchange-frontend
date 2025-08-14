@@ -46,51 +46,137 @@ function LoginPage() {
   };
 
   return (
-    <section>
-      <div className="container-form">
-      <h1>Login</h1>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '80vh',
+      padding: '2rem 1rem'
+    }}>
+      <div style={{
+        backgroundColor: 'rgb(17, 24, 39)', // bg-gray-900
+        borderRadius: '1rem', // rounded-xl
+        border: '1px solid rgb(31, 41, 55)', // border-gray-800
+        padding: '2rem',
+        width: '100%',
+        maxWidth: '400px',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+      }}>
+        <h1 style={{
+          fontSize: '1.875rem',
+          fontWeight: '700',
+          textAlign: 'center',
+          marginBottom: '2rem',
+          color: 'white'
+        }}>
+          Login
+        </h1>
 
-      <form onSubmit={handleSubmit}>
-        <article>
-          <input
-            className="input-form"
-            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
-            name="email"
-            type="email"
-            placeholder="User E-mail"
-            value={form.email}
-            onChange={handleChange}
-            required
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            <input
+              name="email"
+              type="email"
+              placeholder="User E-mail"
+              value={form.email}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                backgroundColor: 'rgb(0, 0, 0)',
+                border: '1px solid rgb(75, 85, 99)',
+                borderRadius: '0.5rem',
+                color: 'white',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'rgb(168, 85, 247)'}
+              onBlur={(e) => e.target.style.borderColor = 'rgb(75, 85, 99)'}
+            />
+          </div>
+
+          <div>
+            <input
+              name="password"
+              type="password"
+              placeholder="Enter your Password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                backgroundColor: 'rgb(0, 0, 0)',
+                border: '1px solid rgb(75, 85, 99)',
+                borderRadius: '0.5rem',
+                color: 'white',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'rgb(168, 85, 247)'}
+              onBlur={(e) => e.target.style.borderColor = 'rgb(75, 85, 99)'}
+            />
+          </div>
+
+          <button 
+            type="submit" 
             disabled={loading}
-          />
-        </article>
-        <article>
-          <input 
-            className="input-form"
-            //className="w-full rounded border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-lime-500"
-            name="password"
-            type="password"
-            placeholder="Enter your Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </article>
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              backgroundColor: loading ? 'rgb(193, 93, 65, 1)' : 'rgb(168, 85, 247)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              fontSize: '1rem',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'background-color 0.2s',
+              opacity: loading ? 0.7 : 1
+            }}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-        <button type="submit" disabled={loading} className="submit-button">
-          {loading ? "Logging in..." : "Login"}
-        </button>
+        {error && (
+          <p style={{
+            color: 'rgb(248, 113, 113)',
+            textAlign: 'center',
+            marginTop: '1rem',
+            fontSize: '0.875rem'
+          }}>
+            {error}
+          </p>
+        )}
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
-
-      <p className="already-account">
-        Don't have an account? <a href="/signup" className="access-here">Sign up here</a>
-      </p>
+        <p style={{
+          textAlign: 'center',
+          marginTop: '1.5rem',
+          color: 'rgb(209, 213, 219)',
+          fontSize: '0.875rem'
+        }}>
+          Don't have an account?{' '}
+          <a 
+            href="/signup"
+            style={{
+              color: 'rgb(193, 93, 65, 1)',
+              textDecoration: 'none',
+              fontWeight: '500'
+            }}
+          >
+            Sign up here
+          </a>
+        </p>
       </div>
-    </section>
+    </div>
   );
 }
-
 export default LoginPage;

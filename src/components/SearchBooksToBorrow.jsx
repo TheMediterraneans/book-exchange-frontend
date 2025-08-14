@@ -215,7 +215,7 @@ function SearchBooksToBorrow() {
                                 borderRadius: '8px',
                                 backgroundColor: copy.isOwnedByCurrentUser ? '#f0f8ff' : '#fff'
                             }}>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px', color: 'black' }}>
                                     {bookData.coverUrl && (
                                         <img
                                             src={bookData.coverUrl}
@@ -225,7 +225,7 @@ function SearchBooksToBorrow() {
                                         />
                                     )}
                                     <div>
-                                        <h3>{bookData.title}</h3>
+                                        <h3 style={{ fontFamily: 'Sreda, serif', fontWeight: 'bold', fontSize: '1.5rem' }}>{bookData.title}</h3>
                                         {bookData.authors && bookData.authors.length > 0 && (
                                             <p><strong>Authors:</strong> {bookData.authors.join(', ')}</p>
                                         )}

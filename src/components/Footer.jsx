@@ -21,8 +21,8 @@ function Footer() {
                     <p>All rights reserved</p>
                 </div>
                 <div className="pr-4 text-right ml-auto">
-                    <p>Made with <span className="text-red-500">❤️</span></p>
-                    <p>Zefi & Luana</p>
+                    <p>Made with <span className="text-red-500">❤️ by Zefi & Luana</span></p>
+                    
                     <Link to="/about">
                     <p>About</p>
                     </Link>

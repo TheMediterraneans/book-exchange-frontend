@@ -396,8 +396,8 @@ function UserBooksPage(props) {
                         onClick={() => handleEditReservation(reservation)}
                         style={{
                           backgroundColor: "ivory",
-                          color: "#3195d6",
-                          border: "3px solid #3195d6",
+                          color: "#6854cc",
+                          border: "3px solid #6854cc",
                           padding: "8px 16px",
                           borderRadius: "4px",
                           cursor: "pointer",

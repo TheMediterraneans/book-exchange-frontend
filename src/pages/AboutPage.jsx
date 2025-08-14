@@ -2,7 +2,6 @@ function AboutPage() {
   return (
     <>
       <div className="min-h-screen bg-black text-white">
-        {/* Header con gradiente */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 to-transparent"></div>
           <div className="relative px-8 py-16">
@@ -12,16 +11,14 @@ function AboutPage() {
                 fontFamily: "Sreda, serif",
               }}
             >
-              About us
+              About
             </h1>
           </div>
         </div>
 
-        {/* Contenuto principale */}
         <div className="px-8 py-12 max-w-4xl mx-auto">
-          {/* Storia del team */}
           <div className="mb-12">
-            <p 
+            <p
               className="text-lg leading-relaxed text-gray-300 mb-6 border-l-4 border-orange-600 pl-6"
               style={{ fontFamily: "Sreda, serif" }}
             >
@@ -31,8 +28,8 @@ function AboutPage() {
               learning coding to enhance her skills to be able to improve the way
               digital archives preservation is handled today.
             </p>
-            
-            <p 
+
+            <p
               className="text-lg leading-relaxed text-gray-300 mb-6 border-l-4 border-green-700 pl-6"
               style={{ fontFamily: "Sreda, serif" }}
             >
@@ -43,12 +40,11 @@ function AboutPage() {
             </p>
           </div>
 
-          {/* Progetto */}
           <div className="mb-12 bg-gradient-to-r from-indigo-900/20 to-green-900/20 p-8 rounded-xl border border-indigo-800/30">
             <h2 className="text-2xl font-bold mb-6 text-orange-300" style={{ fontFamily: "Sreda, serif" }}>
               Our Project
             </h2>
-            <p 
+            <p
               className="text-lg leading-relaxed text-gray-300 mb-6"
               style={{ fontFamily: "Sreda, serif" }}
             >
@@ -61,31 +57,29 @@ function AboutPage() {
             </p>
           </div>
 
-          {/* Vision */}
           <div className="mb-12 bg-gradient-to-l from-green-900/20 to-orange-900/20 p-8 rounded-xl border border-green-800/30">
             <h2 className="text-2xl font-bold mb-6 text-green-400" style={{ fontFamily: "Sreda, serif" }}>
               Our Vision
             </h2>
-            <p 
+            <p
               className="text-lg leading-relaxed text-gray-300"
               style={{ fontFamily: "Sreda, serif" }}
             >
-              This is an MVP that can be largely improved. Our vision for improvements: 
+              This is an MVP that can be largely improved. Our vision for improvements:
               <span className="text-orange-300"> adding localisation</span> and being
-              able to filter available books to borrow around you, 
-              <span className="text-green-300"> creating a forum</span> to discuss, 
+              able to filter available books to borrow around you,
+              <span className="text-green-300"> creating a forum</span> to discuss,
               <span className="text-indigo-300"> adding books to your favourites</span>, being able to follow
-              other users to be updated on their activities, 
+              other users to be updated on their activities,
               <span className="text-orange-300"> organise events</span>...many
-              other possibilities are opened! 
+              other possibilities are opened!
               <span className="text-yellow-400 font-semibold"> Enjoy!</span>
             </p>
           </div>
 
-          {/* Citazioni */}
           <div className="space-y-8">
             <div className="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 p-6 rounded-lg border-l-4 border-orange-500 transform hover:scale-105 transition-transform duration-300">
-              <blockquote 
+              <blockquote
                 className="text-xl italic text-orange-200 mb-2"
                 style={{ fontFamily: "Sreda, serif" }}
               >
@@ -96,7 +90,7 @@ function AboutPage() {
             </div>
 
             <div className="bg-gradient-to-r from-green-900/40 to-teal-900/40 p-6 rounded-lg border-l-4 border-green-500 transform hover:scale-105 transition-transform duration-300">
-              <blockquote 
+              <blockquote
                 className="text-xl italic text-green-200 mb-2"
                 style={{ fontFamily: "Sreda, serif" }}
               >
@@ -108,8 +102,6 @@ function AboutPage() {
           </div>
         </div>
 
-        {/* Footer decorativo */}
-        <div className="mt-16 h-2 bg-gradient-to-r from-indigo-600 via-orange-500 to-green-600"></div>
       </div>
     </>
   );

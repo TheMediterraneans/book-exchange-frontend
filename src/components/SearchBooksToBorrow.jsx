@@ -136,62 +136,37 @@ function SearchBooksToBorrow() {
 
     return (
         <div>
-            {/* Styled Search Container */}
-            <div style={{
-                backgroundColor: 'rgb(17, 24, 39)', // bg-gray-900
-                borderRadius: '0.75rem', // rounded-xl
-                border: '1px solid rgb(31, 41, 55)', // border-gray-800
-                padding: '1.5rem', // p-6
-                maxWidth: '56rem', // max-w-4xl
-                margin: '1.5rem auto 0', // mt-6 mx-auto
-            }}>
+            {/* Styled Search Container - matching AddCopy page */}
+            <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                 {/* Book Search Section */}
-                <div style={{ marginBottom: '1rem' }}> {/* mb-4 */}
-                    <label 
-                        htmlFor="book-search" 
-                        style={{
-                            display: 'block',
-                            fontSize: '0.875rem', // text-sm
-                            color: 'rgb(209, 213, 219)', // text-gray-300
-                            marginBottom: '0.5rem' // mb-2
-                        }}
-                    >
+                <div className="mb-4">
+                    <label htmlFor="book-search" className="block text-sm text-gray-300 mb-2">
                         Search for a book
                     </label>
-                    <form onSubmit={doSearch} style={{ display: 'flex', gap: '0.75rem' }}> {/* gap-3 */}
+                    <div className="flex gap-3">
                         <input
                             id="book-search"
+                            type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Enter book title, author, or ISBN"
-                            style={{
-                                flex: '1',
-                                padding: '0.75rem 1rem',
-                                backgroundColor: 'rgb(0, 0, 0)', // black background like first image
-                                border: '1px solid rgb(75, 85, 99)',
-                                borderRadius: '0.5rem',
-                                color: 'rgb(156, 163, 175)', // gray placeholder text
-                                fontSize: '1rem',
-                                outline: 'none'
+                            onKeyUp={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    doSearch(e);
+                                }
                             }}
+                            placeholder="Enter book title, author, or ISBN"
+                            className="w-full rounded-md border border-gray-700 bg-black text-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500"
                         />
                         <button 
-                            type="submit"
-                            style={{
-                                backgroundColor: 'rgb(168, 85, 247)', // purple like first image
-                                color: 'white',
-                                padding: '0.75rem 1.25rem',
-                                border: 'none',
-                                borderRadius: '0.5rem',
-                                cursor: 'pointer',
-                                fontSize: '1rem',
-                                fontWeight: '600',
-                                minWidth: 'auto'
-                            }}
+                            type="button"
+                            onClick={doSearch}
+                            disabled={loading}
+                            className="rounded-md bg-purple-600 hover:bg-purple-700 disabled:opacity-50 px-4 py-2 font-medium"
                         >
-                            Search
+                            {loading ? 'Searching...' : 'Search'}
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
 

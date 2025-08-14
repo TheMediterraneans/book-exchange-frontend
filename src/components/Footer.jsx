@@ -16,7 +16,7 @@ function Footer() {
                         rel="noopener noreferrer"
                         className="link link-hover text-sm"
                     >
-                        GitHub Project Repository
+                        GitHub
                     </a>
                     <p>All rights reserved</p>
                 </div>

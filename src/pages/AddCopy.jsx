@@ -1,28 +1,40 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import "../components/addCopy.css";
 
 function AddCopy() {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
 
-    // Check authentication status - but since this page is now protected, user will always be authenticated
+    // search term from URL parameters on mount
+    useEffect(() => {
+        const urlSearchTerm = searchParams.get('q');
+        if (urlSearchTerm) {
+            setSearchTerm(urlSearchTerm);
+            searchForBooks(urlSearchTerm);
+        }
+    }, [searchParams]);
+
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         if (!token) {
-            console.log("No token found, user should be redirected by ProtectedRoute");
+            // This shouldn't happen due to ProtectedRoute, but keeping for safety
         }
     }, []);
 
     const searchForBooks = (term) => {
         if (!term.trim()) {
             setSearchResults([]);
+            // clear URL parameters if search is empty
+            setSearchParams({});
             return;
         }
+
+        setSearchParams({ q: term });
 
         setIsLoading(true);
         
@@ -30,7 +42,6 @@ function AddCopy() {
             params: { q: term } 
         })
             .then(response => {
-                console.log('Search response:', response.data);
                 setSearchResults(response.data);
             })
             .catch(error => {
@@ -43,8 +54,7 @@ function AddCopy() {
     };
 
     const handleBookSelect = (book) => {
-        // Navigate to BookDetailPage with book data via state
-        // Using a static route to avoid issues with Open Library IDs containing slashes
+
         navigate('/book-detail', { 
             state: { book } 
         });
@@ -55,7 +65,6 @@ function AddCopy() {
                 <h1 className="text-3xl font-bold mb-6 z-50 font-['Sreda']">Offer books to fellow readers...</h1>
 
                 <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-                    {/* Book Search Section */}
                     <div className="mb-4">
                         <label htmlFor="book-search" className="block text-sm text-gray-300 mb-2">Search for a book</label>
                         <div className="flex gap-3">
@@ -84,7 +93,6 @@ function AddCopy() {
                         </div>
                     </div>
 
-                    {/* Search Results */}
                     {isLoading && (
                         <div className="mt-4 text-teal-400">Searching books...</div>
                     )}

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-
 function BookDetailPage() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,14 +14,14 @@ function BookDetailPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    // Check if book data was passed via navigation state
+    // check if book data was passed via navigation state
     if (location.state?.book) {
       setBook(location.state.book);
       setLoading(false);
       return;
     }
 
-    // Check if book data was stored in sessionStorage (returning from login)
+    // check if book data was stored in sessionStorage (returning from login)
     const storedBookData = sessionStorage.getItem("bookDataBeforeLogin");
     if (storedBookData) {
       try {
@@ -36,48 +35,43 @@ function BookDetailPage() {
       }
     }
 
-    // No book data available, show empty skeleton
+    // no book data available, show empty skeleton
     setBook(null);
     setLoading(false);
   }, [location.state, params.externalId]);
 
   const handleAddToLibrary = async () => {
     if (!user) {
-      // Store current location and book data before redirecting to login
+      // store current location and book data before redirecting to login
       sessionStorage.setItem("redirectAfterLogin", location.pathname);
       sessionStorage.setItem("bookDataBeforeLogin", JSON.stringify(book));
       navigate("/login");
       return;
     }
 
-    if (!book) return;
+    setAddingToLibrary(true);
 
     try {
-      setAddingToLibrary(true);
-
-      const bookCopyData = {
-        externalId: book.key || book.id,
-        title: book.title,
-        authors: book.authors || [],
-        publishedYear: book.publishedYear,
-        isbn: book.isbn,
-        coverUrl: book.coverUrl,
-        language: book.language,
-        subjects: book.subjects || [],
-        source: book.source || "external",
-        maxDuration: parseInt(maxDuration),
-      };
-
-      const storedToken = localStorage.getItem("authToken");
+      const authToken = localStorage.getItem("authToken");
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`,
+        `${import.meta.env.VITE_SERVER_URL}/api/books`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${storedToken}`,
+            Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify(bookCopyData),
+          body: JSON.stringify({
+            externalId: book.key,
+            title: book.title,
+            authors: book.authors,
+            coverUrl: book.coverUrl,
+            publishedYear: book.publishedYear,
+            isbn: book.isbn,
+            language: book.language,
+            subjects: book.subjects,
+            maxDuration: parseInt(maxDuration),
+          }),
         }
       );
 
@@ -96,6 +90,10 @@ function BookDetailPage() {
     }
   };
 
+  const goBack = () => {
+    // always try to go back in history first
+    navigate(-1);
+  };
   if (loading) {
     return <div style={{ padding: "20px" }}>Loading book details...</div>;
   }
@@ -110,26 +108,40 @@ function BookDetailPage() {
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px" }}>
-      {/* <button onClick={() => navigate(-1)}>Back to the previous page</button> */}
+      {/* Back Button */}
+      <button
+        onClick={goBack}
+        style={{
+          marginBottom: "20px",
+          padding: "10px 20px",
+          backgroundColor: "#f84404",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontSize: "16px",
+          fontWeight: "500",
+          transition: "background-color 0.2s",
+        }}
+        onMouseEnter={(e) => (e.target.style.backgroundColor = "#3730a3")}
+        onMouseLeave={(e) => (e.target.style.backgroundColor = "#4f46e5")}
+      >
+        ← Back to Search
+      </button>
+
       <h1
         style={{
           borderBottom: "2px solid #ddd",
           paddingBottom: "10px",
           fontFamily: "Sreda, serif",
-          fontSize: "2rem", // ingrandisce il testo
+          fontSize: "2rem",
           fontWeight: "bold",
         }}
       >
         {book.title}
       </h1>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          marginBottom: "20px",
-        }}
-      >
+      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
         {book.coverUrl && (
           <img
             src={book.coverUrl}
@@ -177,7 +189,14 @@ function BookDetailPage() {
         {!location.state?.fromDatabase && (
           <>
             {user && (
-              <div style={{ marginBottom: "20px" }}>
+              <div
+                style={{
+                  marginBottom: "20px",
+                  fontFamily: "Sreda, serif",
+                  fontSize: "1rem", // ingrandisce il testo
+                  fontWeight: "bold",
+                }}
+              >
                 <label
                   htmlFor="max-duration"
                   style={{
@@ -315,10 +334,6 @@ function BookDetailPage() {
                       <p style={{ color: "#6c757d" }}>
                         You can reserve this book from other users.
                       </p>
-                      
-                      
-                         
-                      
                     </div>
                   );
                 } else {
@@ -370,7 +385,10 @@ function BookDetailPage() {
                   );
                 } else {
                   return (
-                    <div>  //snippet not used now but for possible future improvements
+                    <div>
+                      {" "}
+                      //snippet not used now but for possible future
+                      improvements
                       <p style={{ color: "#dc3545", fontWeight: "bold" }}>
                         ❌ No copies available for borrowing
                       </p>

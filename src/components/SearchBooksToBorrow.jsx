@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 function SearchBooksToBorrow() {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const doSearch = (e) => {
-        e.preventDefault();
-
-        if (!searchTerm.trim()) return;
+    const performSearch = useCallback((term) => {
+        if (!term.trim()) {
+            setResults([]);
+            return;
+        }
 
         const authToken = localStorage.getItem('authToken');
         const isLoggedIn = !!authToken;
@@ -29,7 +31,7 @@ function SearchBooksToBorrow() {
             : {}; // no auth header for public search endpoint
 
         axios.get(endpoint, {
-            params: { q: searchTerm },
+            params: { q: term },
             headers: headers
         })
             .then((response) => {
@@ -40,10 +42,7 @@ function SearchBooksToBorrow() {
 
                 // If the search endpoint doesn't exist, show specific error
                 if (error.response?.status === 404) {
-                    console.log('Search endpoint not found (404)');
-                    console.log('Error message:', error.response?.data?.message);
-
-                    // // Check if this is a "route does not exist" error
+                    // Check if this is a "route does not exist" error
                     // if (error.response?.data?.message === "This route does not exist") {
                     //     const authToken = localStorage.getItem('authToken');
                     //     const endpoint = authToken ? 'search-available-books' : 'browse-available-books';
@@ -77,6 +76,28 @@ function SearchBooksToBorrow() {
             .finally(() => {
                 setLoading(false);
             });
+    }, [navigate]);
+
+    // Initialize search term from URL parameters on mount
+    useEffect(() => {
+        const urlSearchTerm = searchParams.get('q');
+        if (urlSearchTerm) {
+            setSearchTerm(urlSearchTerm);
+            performSearch(urlSearchTerm);
+        }
+    }, [searchParams, performSearch]);
+
+    const doSearch = (e) => {
+        e.preventDefault();
+
+        if (!searchTerm.trim()) {
+            return;
+        }
+
+        // Update URL with search term
+        setSearchParams({ q: searchTerm });
+        // Perform the search
+        performSearch(searchTerm);
     };
 
     const beginReserve = (bookData) => {

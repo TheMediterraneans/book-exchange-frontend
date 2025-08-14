@@ -66,6 +66,11 @@ function ReservationPage() {
       });
   };
 
+  const goBack = () => {
+    // go back in history to return to search results with preserved state
+    navigate(-1);
+  };
+
   if (!book || !selectedCopy) {
     return <div>Loading...</div>;
   }
@@ -78,12 +83,29 @@ function ReservationPage() {
             fontWeight: "bold",
             margin: 10
           }}>Reserve Book</h1>
+      
+      <button 
+        onClick={goBack}
+        style={{
+          marginBottom: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#f84404',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          fontWeight: '500'
+        }}
+      >
+        ← Back to Search
+      </button>
 
       <div>
         <h2
           style={{
             fontFamily: "Sreda, serif",
-            fontSize: "1rem", // ingrandisce il testo
+            fontSize: "1.5rem", // ingrandisce il testo
             fontWeight: "bold",
             margin: 10
           }}
@@ -92,13 +114,14 @@ function ReservationPage() {
         </h2>
         <p>
           <strong style={{
-            
-            margin: 10
+            margin: "10px"
           }}>Authors:</strong> {book.authors && book.authors.join(", ")}
         </p>
+        <section style={{margin: "20px"}}>
         {book.coverUrl && (
           <img src={book.coverUrl} alt={book.title} width="100" />
         )}
+        </section>
 
         <div
           style={{
@@ -144,9 +167,16 @@ function ReservationPage() {
               value={requestedDays}
               onChange={(e) => setRequestedDays(e.target.value)}
               required
+              style={{
+                    padding: "8px 12px",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    width: "100px",
+                    marginLeft: "10px"}}
             />
           </label>
-          <small style={{marginLeft: "10"}}>Maximum {selectedCopy.maxDuration} days (set by owner)</small>
+          <small style={{marginLeft: "20"}}>Maximum {selectedCopy.maxDuration} days (set by owner)</small>
         </div>
 
         <div>

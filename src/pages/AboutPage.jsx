@@ -7,7 +7,7 @@ function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 to-transparent"></div>
           <div className="relative px-8 py-16">
             <h1
-              className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-orange-400 via-orange-300 to-yellow-400 bg-clip-text text-transparent"
+              className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-orange-700 via-orange-300 to-yellow-400 bg-clip-text text-transparent"
               style={{
                 fontFamily: "Sreda, serif",
               }}

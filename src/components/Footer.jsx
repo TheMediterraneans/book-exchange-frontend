@@ -11,12 +11,12 @@ function Footer() {
                 </div>
                 <div className="absolute left-1/2 -translate-x-1/2 text-center">
                     <a 
-                        href="https://github.com/TheMediterraneans/book-exchange-backend" 
+                        href="https://github.com/TheMediterraneans/book-exchange-frontend" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="link link-hover text-sm"
                     >
-                        GitHub Server Repository
+                        GitHub Project Repository
                     </a>
                     <p>All rights reserved</p>
                 </div>

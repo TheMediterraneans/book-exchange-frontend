@@ -1,19 +1,18 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 function SearchBookToLend() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [copiesForBook, setCopiesForBook] = useState({});  // { externalId: [{BookCopy}] }
   const navigate = useNavigate();
 
-  const doSearch = (e) => {
-    e.preventDefault();
-
+  const performSearch = useCallback((term) => {
     setCopiesForBook({}); // clear previous results
 
-    axios.get(`${import.meta.env.VITE_SERVER_URL}/api/search-books`, { params: { q: searchTerm } })
+    axios.get(`${import.meta.env.VITE_SERVER_URL}/api/search-books`, { params: { q: term } })
       .then((response) => {
         setResults(response.data);
 
@@ -44,10 +43,31 @@ function SearchBookToLend() {
         });
       })
       .catch((error) => { console.error('Search error', error); });
+  }, []);
+
+  // Initialize search term from URL on component mount
+  useEffect(() => {
+    const urlSearchTerm = searchParams.get('q');
+    if (urlSearchTerm) {
+      setSearchTerm(urlSearchTerm);
+      // Auto-run search if there's a search term in URL
+      performSearch(urlSearchTerm);
+    }
+  }, [searchParams, performSearch]);
+
+  const doSearch = (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) {
+      return;
+    }
+    
+    // Update URL with search term
+    setSearchParams({ q: searchTerm });
+    // Perform the search
+    performSearch(searchTerm);
   };
 
   const beginReserve = (book, copies) => {
-    console.log('Navigating to reservation page with:', book, copies);
     navigate('/reservation', {
       state: {
         book: book,
@@ -82,20 +102,16 @@ function SearchBookToLend() {
         const externalId = book.key || book.id;
         const copies = copiesForBook[externalId] || [];
 
-        //console.log('Book:', book.title, 'externalId:', externalId, 'copies:', copies);
-
         return (
           <div key={externalId}>
             <strong>{book.title}</strong> — {book.authors && book.authors.join(', ')}
             {book.coverUrl && <img src={book.coverUrl} alt={book.title} width="60" />}
             <br />
             
-            {/* Always show View Details button for every book */}
             <button onClick={() => viewBookDetails(book, copies)}>
               View Details
             </button>
             
-            {/* Show copy count info */}
             <span style={{ marginLeft: '10px', color: '#666' }}>
               {copies.length > 0 ? `(${copies.length} copies available)` : '(No copies available)'}
             </span>

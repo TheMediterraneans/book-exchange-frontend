@@ -92,12 +92,12 @@ function App() {
         <Route path="/reservation" element={<ProtectedRoute><ReservationPage/></ProtectedRoute>} />
         <Route path="/edit-reservation" element={<ProtectedRoute><EditReservationPage/></ProtectedRoute>} />
         <Route path="/mybooks/add" element={<ProtectedRoute><AddCopy /></ProtectedRoute>} />
-        <Route path="/*" element={<PageNotFound />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </AuthProvider>
   )
 }
 
-export default App
+export default App;

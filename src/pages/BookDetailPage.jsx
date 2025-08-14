@@ -14,14 +14,14 @@ function BookDetailPage() {
     const { user } = useAuth();
 
     useEffect(() => {
-        // Check if book data was passed via navigation state
+        // check if book data was passed via navigation state
         if (location.state?.book) {
             setBook(location.state.book);
             setLoading(false);
             return;
         }
 
-        // Check if book data was stored in sessionStorage (returning from login)
+        // check if book data was stored in sessionStorage (returning from login)
         const storedBookData = sessionStorage.getItem('bookDataBeforeLogin');
         if (storedBookData) {
             try {
@@ -35,46 +35,41 @@ function BookDetailPage() {
             }
         }
 
-        // No book data available, show empty skeleton
+        // no book data available, show empty skeleton
         setBook(null);
         setLoading(false);
     }, [location.state, params.externalId]);
 
     const handleAddToLibrary = async () => {
         if (!user) {
-            // Store current location and book data before redirecting to login
+            // store current location and book data before redirecting to login
             sessionStorage.setItem('redirectAfterLogin', location.pathname);
             sessionStorage.setItem('bookDataBeforeLogin', JSON.stringify(book));
             navigate('/login');
             return;
         }
 
-        if (!book) return;
+        setAddingToLibrary(true);
 
         try {
-            setAddingToLibrary(true);
-            
-            const bookCopyData = {
-                externalId: book.key || book.id,
-                title: book.title,
-                authors: book.authors || [],
-                publishedYear: book.publishedYear,
-                isbn: book.isbn,
-                coverUrl: book.coverUrl,
-                language: book.language,
-                subjects: book.subjects || [],
-                source: book.source || 'external',
-                maxDuration: parseInt(maxDuration)
-            };
-
-            const storedToken = localStorage.getItem("authToken");
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`, {
-                method: "POST",
+            const authToken = localStorage.getItem('authToken');
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/books`, {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${storedToken}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify(bookCopyData),
+                body: JSON.stringify({
+                    externalId: book.key,
+                    title: book.title,
+                    authors: book.authors,
+                    coverUrl: book.coverUrl,
+                    publishedYear: book.publishedYear,
+                    isbn: book.isbn,
+                    language: book.language,
+                    subjects: book.subjects,
+                    maxDuration: parseInt(maxDuration)
+                })
             });
 
             if (!response.ok) {
@@ -92,7 +87,10 @@ function BookDetailPage() {
         }
     };
 
-    if (loading) {
+    const goBack = () => {
+        // always try to go back in history first
+        navigate(-1);
+    };    if (loading) {
         return <div style={{ padding: '20px' }}>Loading book details...</div>;
     }
 
@@ -106,7 +104,27 @@ function BookDetailPage() {
 
     return (
         <div style={{ padding: '20px', maxWidth: '800px' }}>
-           {/* <button onClick={() => navigate(-1)}>Back to the previous page</button> */}
+            {/* Back Button */}
+            <button 
+                onClick={goBack}
+                style={{
+                    marginBottom: '20px',
+                    padding: '10px 20px',
+                    backgroundColor: '#4f46e5',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#3730a3'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#4f46e5'}
+            >
+                ← Back to Search
+            </button>
+            
             <h1 style={{ borderBottom: '2px solid #ddd', paddingBottom: '10px' }}>
                 {book.title}
             </h1>
@@ -217,9 +235,8 @@ function BookDetailPage() {
                             const isLoggedInContext = location.state?.isLoggedIn;
                             const currentUserId = user?._id;
                             
-                            // For logged-in users with detailed copy information
                             if (isLoggedInContext && availableCopies.length > 0) {
-                                // Filter copies to find ones owned by current user and others
+                                // filter copies to find ones owned by current user and others
                                 const ownedCopies = availableCopies.filter(copy => copy.owner === currentUserId || copy.owner?._id === currentUserId);
                                 const borrowableCopies = availableCopies.filter(copy => copy.owner !== currentUserId && copy.owner?._id !== currentUserId);
                                 
@@ -291,7 +308,7 @@ function BookDetailPage() {
                                     );
                                 }
                             }
-                            // For non-logged-in users with only count information
+                            
                             else if (!isLoggedInContext && typeof availableCount === 'number') {
                                 if (availableCount > 0) {
                                     return (

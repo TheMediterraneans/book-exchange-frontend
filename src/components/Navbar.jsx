@@ -34,14 +34,20 @@ function Navbar() {
   
     <div>
       <section className="main-title">
-        <h1 className="cursor-pointer select-none text-4xl font-bold tracking-wide" onClick={() => navigate("/")}>
-          Books.Inc
-        </h1>
+        <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => navigate("/")}>
+          <img 
+            src="/book-logo.png" 
+            alt="Books Inc Logo" 
+            className="w-8 h-8 md:w-10 md:h-10"
+          />
+          <h1 className="text-4xl font-bold tracking-wide">
+            Books.Inc
+          </h1>
+        </div>
       </section>
     </div>
 
     <div className="flex items-center space-x-6 text-sm md:text-base">
-      {/* Rest of your existing JSX - no changes needed */}
       {user ? (
         <>
           <span className="hidden sm:inline-block">Welcome, <span className="font-bold">{user.name}</span>!</span>
@@ -76,13 +82,13 @@ function Navbar() {
             onClick={() => navigate("/copies")}
             className="hover:text-purple-300 transition"
           >
-            <span className="nav-button">Offer Books to Lend</span>
+            <span className="nav-button">Borrow Books</span>
           </button>
           <button
             onClick={handleAddBooksClick}
-            className="underline hover:text-purple-300 transition"
+            className="hover:text-purple-300 transition"
           >
-            <span className="nav-button"> Add Books</span>
+            <span className="nav-button">Lend Books</span>
           </button>
           <button
             onClick={() => navigate("/login")}

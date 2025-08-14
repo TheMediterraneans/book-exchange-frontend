@@ -56,6 +56,11 @@ function ReservationPage() {
       });
   };
 
+  const goBack = () => {
+    // go back in history to return to search results with preserved state
+    navigate(-1);
+  };
+
   if (!book || !selectedCopy) {
     return <div>Loading...</div>;
   }
@@ -63,6 +68,23 @@ function ReservationPage() {
   return (
     <div>
       <h1>Reserve Book</h1>
+      
+      <button 
+        onClick={goBack}
+        style={{
+          marginBottom: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#4f46e5',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          fontWeight: '500'
+        }}
+      >
+        ← Back to Search
+      </button>
 
       <div>
         <h2>{book.title}</h2>

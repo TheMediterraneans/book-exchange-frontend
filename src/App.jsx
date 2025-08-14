@@ -18,39 +18,6 @@ import AboutPage from "./pages/AboutPage"
 
 function App() {
   
-  const addBookCopy = async (bookCopyData) => {
-    try {
-      const storedToken = localStorage.getItem("authToken");
-      
-      console.log('Stored token:', storedToken);
-      console.log('Book copy data being sent:', bookCopyData);
-      
-      if (!storedToken) {
-        throw new Error("No authentication token found. Please log in again.");
-      }
-      
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${storedToken}`,
-        },
-        body: JSON.stringify(bookCopyData),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add book to library");
-      }
-      
-      const newBookCopy = await response.json();
-      return newBookCopy;
-    } catch (error) {
-      console.error("Error adding book copy:", error);
-      throw error;
-    }
-  };
-
   const deleteCopy = async (mybookId) => {
     try {
       const storedToken = localStorage.getItem("authToken");

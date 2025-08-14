@@ -53,7 +53,7 @@ function BookDetailPage() {
 
         try {
             const authToken = localStorage.getItem('authToken');
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/books`, {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/mybooks/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,9 +88,11 @@ function BookDetailPage() {
     };
 
     const goBack = () => {
-        // always try to go back in history first
+        // Always try to go back in history first
         navigate(-1);
-    };    if (loading) {
+    };
+
+    if (loading) {
         return <div style={{ padding: '20px' }}>Loading book details...</div>;
     }
 
@@ -308,7 +310,7 @@ function BookDetailPage() {
                                     );
                                 }
                             }
-                            
+
                             else if (!isLoggedInContext && typeof availableCount === 'number') {
                                 if (availableCount > 0) {
                                     return (

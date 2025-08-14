@@ -64,25 +64,23 @@ function Homepage() {
                         </Link>
                     ) : (
                         <>
-                        <section className='logged-navigation-button'>
+                        <section className='logged-navigation-button flex gap-4'>
                             <Link to="/mybooks">
-                                <button className="bg-orange-600 hover:bg-orange-400 px-6 py-3 rounded-lg font-semibold m-10px">
+                                <button className="bg-orange-600 hover:bg-orange-400 px-6 py-3 rounded-lg font-semibold">
                                     My Library
                                 </button>
-                                <span>   </span>
                             </Link>
                             <Link to="/copies">
-                                <button className="bg-cyan-600 hover:bg-cyan-400 px-6 py-3 rounded-lg font-semibold m-20px">
+                                <button className="bg-cyan-600 hover:bg-cyan-400 px-6 py-3 rounded-lg font-semibold">
                                     Find Books to borrow
                                 </button>
                             </Link>
-                            </section>
+                        </section>
                         </>
                     )}
                 </div>
             </div>
 
-            {/* Featured Books Section */}
             <div className="max-w-6xl mx-auto px-4 py-12">
                 <h2 className="text-3xl font-bold text-center mb-6">Featured Books</h2>
                 {loading ? (

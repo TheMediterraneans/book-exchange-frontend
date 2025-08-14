@@ -268,9 +268,10 @@ function SearchBooksToBorrow() {
                                 border: '2px solid #ddd',
                                 padding: '15px',
                                 margin: '15px 0',
-                                borderRadius: '8px'
+                                borderRadius: '8px',
+                                maxWidth: '56rem',
                             }}>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px', width: '100%' }}>
                                     {bookData.coverUrl && (
                                         <img
                                             src={bookData.coverUrl}

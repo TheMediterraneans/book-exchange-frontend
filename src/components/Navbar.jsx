@@ -30,7 +30,7 @@ function Navbar() {
 
   return (
     
-  <nav className="font-['Sreda'] bg-indigo-500 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center"> {/*font-['Lato','Helvetica_Neue',Helvetica,Arial,sans-serif] text-3xl , font-['Sreda']*/}
+  <nav className="z-50 font-['Sreda'] bg-indigo-500 border-b border-purple-700 text-white px-6 py-4 flex justify-between items-center"> {/*font-['Lato','Helvetica_Neue',Helvetica,Arial,sans-serif] text-3xl , font-['Sreda']*/}
   
     <div>
       <section className="main-title">

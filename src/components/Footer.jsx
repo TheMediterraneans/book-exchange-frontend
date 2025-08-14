@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 function Footer() {
     return (
         <footer className="footer py-2 px-4 text-base-content border-t border-base-300 fixed bottom-0 left-0 right-0 z-50 shadow-lg backdrop-blur-sm bg-base-100/95 text-sm">
-            <div className="relative flex w-full items-center">
+            <div className="relative flex w-full items-center bg-gray-800/60">
                 <div className="pl-4">
                     <section><a href="#" target="blank">Facebook</a></section>
                     <section><a href="#" target="blank">X</a></section>
@@ -21,8 +21,8 @@ function Footer() {
                     <p>All rights reserved</p>
                 </div>
                 <div className="pr-4 text-right ml-auto">
-                    <p>Contacts:</p>
-                    <p>ruscittiluana@gmail.com & zefkav@yahoo.gr</p>
+                    <p>Made with <span className="text-red-500">❤️</span></p>
+                    <p>Zefi & Luana</p>
                     <Link to="/about">
                     <p>About</p>
                     </Link>

@@ -66,12 +66,13 @@ function Homepage() {
                         <>
                         <section className='logged-navigation-button'>
                             <Link to="/mybooks">
-                                <button className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold">
+                                <button className="bg-orange-600 hover:bg-orange-400 px-6 py-3 rounded-lg font-semibold m-10px">
                                     My Library
                                 </button>
+                                <span>   </span>
                             </Link>
                             <Link to="/copies">
-                                <button className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold">
+                                <button className="bg-cyan-600 hover:bg-cyan-400 px-6 py-3 rounded-lg font-semibold m-20px">
                                     Find Books to borrow
                                 </button>
                             </Link>

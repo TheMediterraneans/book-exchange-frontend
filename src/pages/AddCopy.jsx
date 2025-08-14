@@ -52,7 +52,7 @@ function AddCopy() {
     return (
         <div className="min-h-screen bg-black text-white">
             <div className="max-w-5xl mx-auto px-6 py-8">
-                <h1 className="text-3xl font-bold mb-6">Offer books to fellow readers...</h1>
+                <h1 className="text-3xl font-bold mb-6 z-50 font-['Sreda']">Offer books to fellow readers...</h1>
 
                 <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                     {/* Book Search Section */}

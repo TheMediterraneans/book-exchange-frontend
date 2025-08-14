@@ -1,4 +1,3 @@
-// Copies.jsx
 import { useState } from "react";
 import SearchBooksToBorrow from "../components/SearchBooksToBorrow";
 
@@ -11,30 +10,11 @@ function Copies() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <h1
-        style={{
-          marginLeft: "20px",
-          fontFamily: "Sreda, serif",
-          fontSize: "2rem",
-          fontWeight: "bold",
-        }}
-      >
-        Find available copies to borrow
-      </h1>
-      <p
-        style={{
-          marginLeft: "20px",
-          fontFamily: "Sreda, serif",
-          fontSize: "1rem",
-        }}
-      >
-        Search through available book copies that other users have added to
-        their lending libraries.
-        <br />
-        Find books you'd like to borrow and make a reservation request.
-      </p>
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <h1 className="text-3xl font-bold mb-6 z-50 font-['Sreda']">
+          Find available copies to borrow...
+        </h1>
 
-      <div className="mt-6 max-w-4xl mx-auto">
         <SearchBooksToBorrow className="w-full" />
       </div>
     </div>

@@ -121,10 +121,10 @@ function BookDetailPage() {
           cursor: "pointer",
           fontSize: "16px",
           fontWeight: "500",
-          transition: "background-color 0.2s",
+          //transition: "background-color 0.2s",
         }}
-        onMouseEnter={(e) => (e.target.style.backgroundColor = "#3730a3")}
-        onMouseLeave={(e) => (e.target.style.backgroundColor = "#4f46e5")}
+        onMouseEnter={(e) => (e.target.style.backgroundColor = "##be6125")}
+        onMouseLeave={(e) => (e.target.style.backgroundColor = "##d67536")}
       >
         ← Back to Search
       </button>

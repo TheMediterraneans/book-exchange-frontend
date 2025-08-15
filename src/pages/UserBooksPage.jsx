@@ -15,7 +15,7 @@ function UserBooksPage(props) {
 
   const { onDelete } = props;
 
-  // Fetch user's books when component mounts
+  // fetch user's books when component mounts
   useEffect(() => {
     fetchMyBooks();
     fetchReservations();
@@ -119,7 +119,7 @@ function UserBooksPage(props) {
         throw new Error("Failed to cancel reservation");
       }
 
-      // Remove the reservation from the state
+      // remove the reservation from the state
       setReservations((prevReservations) =>
         prevReservations.filter(
           (reservation) => reservation._id !== reservationId
@@ -162,7 +162,6 @@ function UserBooksPage(props) {
         Welcome to your books!
       </h1>
 
-      {/* Your books content here */}
       <div>
         <h2
           style={{
@@ -229,7 +228,6 @@ function UserBooksPage(props) {
                     </span>
                   </p>
 
-                  {/* Removed Max Duration display as requested */}
                   {!book.isAvailable && book.reservation && (
                     <div className="reservation-info">
                       <p className="reservation-start">
@@ -273,8 +271,8 @@ function UserBooksPage(props) {
         <h2
           style={{
             fontFamily: "Sreda, serif",
-            fontSize: "2rem", // ingrandisce il testo
-            fontWeight: "bold", // lo rende grassetto
+            fontSize: "2rem",
+            fontWeight: "bold",
           }}
         >
           Your Reservations
@@ -318,7 +316,6 @@ function UserBooksPage(props) {
                 return (
                   <div key={reservation._id} className="book-card">
                     <div className="book-info">
-                      {/* Show book cover if available */}
                       {reservation.book?.coverUrl && (
                         <img
                           src={reservation.book.coverUrl}
@@ -355,7 +352,6 @@ function UserBooksPage(props) {
                         {new Date(reservation.endDate).toLocaleDateString()}
                       </p>
 
-                      {/* Show duration */}
                       <p className="reservation-duration">
                         <strong>Duration:</strong>{" "}
                         {Math.ceil(
@@ -366,7 +362,6 @@ function UserBooksPage(props) {
                         days
                       </p>
 
-                      {/* Show book copy owner info */}
                       {reservation.book?.owner ? (
                         <p className="book-owner">
                           <strong>Owner:</strong>{" "}
@@ -384,7 +379,6 @@ function UserBooksPage(props) {
                       )}
                     </div>
 
-                    {/* Action buttons */}
                     <div
                       style={{
                         display: "flex",

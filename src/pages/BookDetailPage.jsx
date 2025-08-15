@@ -108,7 +108,6 @@ function BookDetailPage() {
 
   return (
     <div style={{ padding: "20px", maxWidth: "800px" }}>
-      {/* Back Button */}
       <button
         onClick={goBack}
         style={{
@@ -193,7 +192,7 @@ function BookDetailPage() {
                 style={{
                   marginBottom: "20px",
                   fontFamily: "Sreda, serif",
-                  fontSize: "1rem", // ingrandisce il testo
+                  fontSize: "1rem",
                   fontWeight: "bold",
                 }}
               >
@@ -279,9 +278,8 @@ function BookDetailPage() {
               const isLoggedInContext = location.state?.isLoggedIn;
               const currentUserId = user?._id;
 
-              // For logged-in users with detailed copy information
               if (isLoggedInContext && availableCopies.length > 0) {
-                // Filter copies to find ones owned by current user and others
+                // filter copies to find ones owned by current user and others
                 const ownedCopies = availableCopies.filter(
                   (copy) =>
                     copy.owner === currentUserId ||
@@ -350,7 +348,7 @@ function BookDetailPage() {
                   );
                 }
               }
-              // For non-logged-in users with only count information
+              // for non-logged-in users with only count information
               else if (
                 !isLoggedInContext &&
                 typeof availableCount === "number"
@@ -400,7 +398,7 @@ function BookDetailPage() {
                   );
                 }
               }
-              // Fallback for cases where copy information is not available
+              // fallback for cases where copy information is not available
               else {
                 return (
                   <div>

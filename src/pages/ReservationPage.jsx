@@ -79,7 +79,7 @@ function ReservationPage() {
     <div>
       <h1 style={{
             fontFamily: "Sreda, serif",
-            fontSize: "2rem", // ingrandisce il testo
+            fontSize: "2rem",
             fontWeight: "bold",
             margin: 10
           }}>Reserve Book</h1>
@@ -105,7 +105,7 @@ function ReservationPage() {
         <h2
           style={{
             fontFamily: "Sreda, serif",
-            fontSize: "1.5rem", // ingrandisce il testo
+            fontSize: "1.5rem",
             fontWeight: "bold",
             margin: 10
           }}
@@ -134,7 +134,7 @@ function ReservationPage() {
         >
           <h3 style={{
             fontFamily: "Sreda, serif",
-            fontSize: "1rem", // ingrandisce il testo
+            fontSize: "1rem",
             fontWeight: "bold",
             
           }}>Copy Details</h3>
@@ -155,7 +155,7 @@ function ReservationPage() {
           <label>
             <strong style={{
             fontFamily: "Sreda, serif",
-            fontSize: "1rem", // ingrandisce il testo
+            fontSize: "1rem",
             fontWeight: "bold",
             margin: 10
           }}>Loan Duration (days):</strong>

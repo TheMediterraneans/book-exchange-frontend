@@ -24,7 +24,7 @@ function SignupPage() {
       await signup(form);
       setSuccess(true);
       
-      // Show success message for 2 sec then go to login
+      // show success message for 2 sec then go to login
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -60,9 +60,9 @@ function SignupPage() {
       padding: '2rem 1rem'
     }}>
       <div style={{
-        backgroundColor: 'rgb(17, 24, 39)', // bg-gray-900
-        borderRadius: '1rem', // rounded-xl
-        border: '1px solid rgb(31, 41, 55)', // border-gray-800
+        backgroundColor: 'rgb(17, 24, 39)',
+        borderRadius: '1rem',
+        border: '1px solid rgb(31, 41, 55)',
         padding: '2rem',
         width: '100%',
         maxWidth: '400px',
@@ -204,7 +204,7 @@ function SignupPage() {
               fontWeight: '500'
             }}
           >
-            Accedi qui
+            Log in
           </a>
         </p>
       </div>

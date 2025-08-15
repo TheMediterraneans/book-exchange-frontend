@@ -16,7 +16,7 @@ function EditReservationPage() {
     if (!reservation) {
       navigate("/mybooks");
     } else {
-      // Calculate current duration from the reservation dates
+      // calculate current duration from the reservation dates
       const currentDuration = Math.ceil(
         (new Date(reservation.endDate) - new Date(reservation.startDate)) /
           (1000 * 60 * 60 * 24)
@@ -32,7 +32,7 @@ function EditReservationPage() {
 
     const authToken = localStorage.getItem("authToken"); // get auth token from localStorage
 
-    // Calculate new end date based on start date and new duration
+    // calculate new end date based on start date and new duration
     const newEndDate = new Date(reservation.startDate);
     newEndDate.setDate(newEndDate.getDate() + parseInt(requestedDays));
 
@@ -81,10 +81,10 @@ function EditReservationPage() {
     return <div>Loading...</div>;
   }
 
-  // Calculate max allowed duration from the book copy
+  // calculate max allowed duration from the book copy
   const maxAllowedDays = reservation.book?.maxDuration || 30;
 
-  // Calculate current status
+  // calculate current status
   const currentDate = new Date();
   const startDate = new Date(reservation.startDate);
   const endDate = new Date(reservation.endDate);
@@ -156,8 +156,8 @@ function EditReservationPage() {
           <h3
             style={{
               fontFamily: "Sreda, serif",
-              fontSize: "2rem", // ingrandisce il testo
-              fontWeight: "bold", // lo rende grassetto
+              fontSize: "2rem",
+              fontWeight: "bold",
             }}
           >
             Reservation Details

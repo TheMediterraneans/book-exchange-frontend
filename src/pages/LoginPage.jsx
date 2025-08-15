@@ -30,10 +30,10 @@ function LoginPage() {
       const userResponse = await verify();
       login(userResponse.data);
 
-      // Check if there's a stored redirect location (from BookDetailPage)
+      // check if there's a stored redirect location (from BookDetailPage)
       const redirectLocation = sessionStorage.getItem('redirectAfterLogin');
       if (redirectLocation) {
-        sessionStorage.removeItem('redirectAfterLogin'); // Clean up
+        sessionStorage.removeItem('redirectAfterLogin');
         navigate(redirectLocation);
       } else {
         navigate("/mybooks");
@@ -54,9 +54,9 @@ function LoginPage() {
       padding: '2rem 1rem'
     }}>
       <div style={{
-        backgroundColor: 'rgb(17, 24, 39)', // bg-gray-900
-        borderRadius: '1rem', // rounded-xl
-        border: '1px solid rgb(31, 41, 55)', // border-gray-800
+        backgroundColor: 'rgb(17, 24, 39)',
+        borderRadius: '1rem',
+        border: '1px solid rgb(31, 41, 55)',
         padding: '2rem',
         width: '100%',
         maxWidth: '400px',

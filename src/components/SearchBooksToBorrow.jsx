@@ -23,8 +23,8 @@ function SearchBooksToBorrow() {
 
         // choose search endpoint based on user authentication status
         const endpoint = isLoggedIn
-            ?` ${import.meta.env.VITE_SERVER_URL}/api/search-available-books`  // Full details with owner info
-            : `${import.meta.env.VITE_SERVER_URL}/api/browse-available-books`; // Public version without owner info
+            ? ` ${import.meta.env.VITE_SERVER_URL}/api/search-available-books`
+            : `${import.meta.env.VITE_SERVER_URL}/api/browse-available-books`;
 
         const headers = isLoggedIn
             ? { Authorization: `Bearer ${authToken}` }
@@ -40,14 +40,7 @@ function SearchBooksToBorrow() {
             .catch((error) => {
                 console.error('Search error', error);
 
-                // If the search endpoint doesn't exist, show specific error
                 if (error.response?.status === 404) {
-                    // Check if this is a "route does not exist" error
-                    // if (error.response?.data?.message === "This route does not exist") {
-                    //     const authToken = localStorage.getItem('authToken');
-                    //     const endpoint = authToken ? 'search-available-books' : 'browse-available-books';
-                    //     throw new Error(`The '${endpoint}' endpoint is not implemented in your backend yet. Please add the route to your bookCopy.routes.js file.`);
-                    // }
                 } else if (error.response?.status === 401) {
                     alert('Please log in again');
                     navigate('/login');
@@ -78,7 +71,7 @@ function SearchBooksToBorrow() {
             });
     }, [navigate]);
 
-    // Initialize search term from URL parameters on mount
+    // initialize search term from URL parameters on mount
     useEffect(() => {
         const urlSearchTerm = searchParams.get('q');
         if (urlSearchTerm) {
@@ -94,9 +87,8 @@ function SearchBooksToBorrow() {
             return;
         }
 
-        // Update URL with search term
+        // update URL with search term
         setSearchParams({ q: searchTerm });
-        // Perform the search
         performSearch(searchTerm);
     };
 
@@ -117,7 +109,7 @@ function SearchBooksToBorrow() {
 
     const viewBookDetails = (bookData) => {
         navigate('/book-detail', {
-            state: { 
+            state: {
                 book: {
                     key: bookData.externalId,
                     title: bookData.title,
@@ -136,9 +128,7 @@ function SearchBooksToBorrow() {
 
     return (
         <div>
-            {/* Styled Search Container - matching AddCopy page */}
             <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-                {/* Book Search Section */}
                 <div className="mb-4">
                     <label htmlFor="book-search" className="block text-sm text-gray-300 mb-2">
                         Search for a book
@@ -158,7 +148,7 @@ function SearchBooksToBorrow() {
                             placeholder="Enter book title, author, or ISBN"
                             className="w-full rounded-md border border-gray-700 bg-black text-white px-3 py-2 outline-none focus:ring-2 focus:ring-teal-500"
                         />
-                        <button 
+                        <button
                             type="button"
                             onClick={doSearch}
                             disabled={loading}
@@ -170,10 +160,10 @@ function SearchBooksToBorrow() {
                 </div>
             </div>
 
-            {loading && <div style={{ 
-                textAlign: 'center', 
+            {loading && <div style={{
+                textAlign: 'center',
                 padding: '2rem',
-                color: 'rgb(209, 213, 219)' 
+                color: 'rgb(209, 213, 219)'
             }}>
                 Searching available books...
             </div>}
@@ -258,7 +248,7 @@ function SearchBooksToBorrow() {
                             </div>
                         ));
                     } else {
-                        // Non-logged-in user - show grouped book entry
+                        // non-logged-in user - show grouped book entry
                         return (
                             <div key={bookData.externalId} style={{
                                 border: '2px solid #ddd',
@@ -282,7 +272,7 @@ function SearchBooksToBorrow() {
                                             <p><strong>Authors:</strong> {bookData.authors.join(', ')}</p>
                                         )}
                                         <p><strong>Available Copies:</strong> {bookData.availableCount}</p>
-                                        
+
                                         <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                                             <button
                                                 onClick={() => viewBookDetails(bookData)}
@@ -298,7 +288,7 @@ function SearchBooksToBorrow() {
                                             >
                                                 View Details
                                             </button>
-                                            
+
                                             <button
                                                 onClick={() => navigate('/login')}
                                                 style={{
@@ -323,10 +313,10 @@ function SearchBooksToBorrow() {
             </div>
 
             {!loading && results.length === 0 && searchTerm && (
-                <p style={{ 
-                    textAlign: 'center', 
+                <p style={{
+                    textAlign: 'center',
                     color: 'rgb(209, 213, 219)',
-                    padding: '2rem' 
+                    padding: '2rem'
                 }}>
                     No available books found. Try a different search term.
                 </p>

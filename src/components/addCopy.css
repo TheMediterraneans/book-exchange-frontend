@@ -1,158 +1,156 @@
+.add-copy-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-                .add-copy-container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
+.add-copy-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-                .add-copy-form {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
+.search-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-                .search-section {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
+.search-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
 
-                .search-input {
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    font-size: 16px;
-                }
+.search-input:disabled {
+    background-color: #f5f5f5;
+}
 
-                .search-input:disabled {
-                    background-color: #f5f5f5;
-                }
+.clear-selection-btn {
+    align-self: flex-start;
+    padding: 5px 10px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-                .clear-selection-btn {
-                    align-self: flex-start;
-                    padding: 5px 10px;
-                    background-color: #6c757d;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
+.loading {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
 
-                .loading {
-                    text-align: center;
-                    color: #666;
-                    padding: 20px;
-                }
+.search-results {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+}
 
-                .search-results {
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    max-height: 400px;
-                    overflow-y: auto;
-                }
+.book-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-                .book-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                }
+.book-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
 
-                .book-item {
-                    padding: 15px;
-                    border-bottom: 1px solid #eee;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
+.book-item:hover {
+    background-color: #f8f9fa;
+}
 
-                .book-item:hover {
-                    background-color: #f8f9fa;
-                }
+.book-item:last-child {
+    border-bottom: none;
+}
 
-                .book-item:last-child {
-                    border-bottom: none;
-                }
+.book-info {
+    display: flex;
+    gap: 15px;
+}
 
-                .book-info {
-                    display: flex;
-                    gap: 15px;
-                }
+.book-thumbnail {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
 
-                .book-thumbnail {
-                    width: 60px;
-                    height: 80px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                }
+.book-thumbnail-large {
+    width: 120px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+}
 
-                .book-thumbnail-large {
-                    width: 120px;
-                    height: 160px;
-                    object-fit: cover;
-                    border-radius: 4px;
-                }
+.book-details h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
 
-                .book-details h4 {
-                    margin: 0 0 5px 0;
-                    color: #333;
-                }
+.book-details p {
+    margin: 0 0 3px 0;
+    color: #666;
+    font-size: 14px;
+}
 
-                .book-details p {
-                    margin: 0 0 3px 0;
-                    color: #666;
-                    font-size: 14px;
-                }
+.selected-book {
+    border: 2px solid #28a745;
+    border-radius: 4px;
+    padding: 15px;
+    background-color: #f8fff9;
+}
 
-                .selected-book {
-                    border: 2px solid #28a745;
-                    border-radius: 4px;
-                    padding: 15px;
-                    background-color: #f8fff9;
-                }
+.book-preview {
+    display: flex;
+    gap: 15px;
+}
 
-                .book-preview {
-                    display: flex;
-                    gap: 15px;
-                }
+.description {
+    margin-top: 10px !important;
+}
 
-                .description {
-                    margin-top: 10px !important;
-                }
+.duration-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-                .duration-section {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                }
+.duration-input {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-                .duration-input {
-                    width: 100px;
-                    padding: 8px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                }
+.duration-section small {
+    color: #666;
+    font-size: 12px;
+}
 
-                .duration-section small {
-                    color: #666;
-                    font-size: 12px;
-                }
+.submit-btn {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
 
-                .submit-btn {
-                    padding: 12px 24px;
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: background-color 0.2s;
-                }
+.submit-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}
 
-                .submit-btn:hover:not(:disabled) {
-                    background-color: #0056b3;
-                }
-
-                .submit-btn:disabled {
-                    background-color: #6c757d;
-                    cursor: not-allowed;
-                }
-            
+.submit-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
